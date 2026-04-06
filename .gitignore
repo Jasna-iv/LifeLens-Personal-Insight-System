@@ -1,0 +1,26 @@
+# Python / Django
+__pycache__/
+*.pyc
+db.sqlite3
+.env
+venv/
+.env.local
+
+# Django static/media (optional)
+media/
+staticfiles/
+
+# Logs
+*.log
+
+# VS Code
+.vscode/
+
+# Angular / Node
+node_modules/
+dist/
+.angular/
+
+# OS files
+.DS_Store
+Thumbs.db

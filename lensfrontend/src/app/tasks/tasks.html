@@ -1,0 +1,143 @@
+<div class="tasks-page">
+
+<!-- Logout & Dashboard -->
+<div class="navbar">
+  <div class="logo">🔭 LifeLens</div>
+  <div class="nav-links">
+    <button (click)="goToDashboard()">Dashboard</button>
+    <button (click)="goToExpenses()">Expenses</button>
+      <button>Documents</button>
+    <button>Insights</button>
+    <button>User Profile</button>
+    <button (click)="logout()">Logout</button>
+  </div>
+</div>
+
+  <!-- Menu Button -->
+  <button class="menu-btn" (click)="toggleMenu($event)">
+  ☰
+</button>
+
+
+  <!-- Menu -->
+  <div class="menu" [class.show]="menuOpen" (click)="$event.stopPropagation()">
+    <div class="menu-option" (click)="openBox('completed'); $event.stopPropagation()">Completed Tasks</div>
+<div class="menu-option" (click)="openBox('incompleted'); $event.stopPropagation()">Incompleted Tasks</div>
+<div class="menu-option" (click)="openBox('recycle'); $event.stopPropagation()">Recycle Bin</div>
+  </div>
+
+  <div class="overlay" *ngIf="menuOpen || activeBox" (click)="closeAll()"></div>
+<!-- Completed -->
+<div class="task-popout completed-box" *ngIf="activeBox==='completed'">
+    <h3>Completed Tasks</h3>
+    <ul>
+<li *ngFor="let t of completedTodos">
+  <div class="task-content">
+    <span class="task-icon">✔</span>
+    <span>{{ t.task }}</span>
+    <small class="task-date" *ngIf="t.date">{{ t.date | date:'mediumDate' }}</small>
+  </div>
+</li>
+    </ul>
+  </div>
+
+<!-- Incompleted -->
+<div class="task-popout incomplete-box" *ngIf="activeBox==='incompleted'">
+    <h3>Incompleted Tasks</h3>
+    <ul>
+<li *ngFor="let t of incompletedTodos">
+  <div class="task-content">
+    <span class="task-icon">✖</span>
+    <span>{{ t.task }}</span>
+    <small class="task-date" *ngIf="t.date">{{ t.date | date:'mediumDate' }}</small>
+  </div>
+</li>
+    </ul>
+  </div>
+
+<!-- Recycle -->
+<div class="task-popout" *ngIf="activeBox==='recycle'">
+  <h3>Recycle Bin</h3>
+
+  <!-- Only show when there are deleted tasks -->
+  <div class="recycle-header" *ngIf="recycledTodos.length > 0">
+    <label>
+      <input type="checkbox" [(ngModel)]="selectAll" (change)="toggleSelectAll()"> Select All
+    </label>
+
+    <button class="delete-all-btn" 
+    
+          [disabled]="!hasSelected()" 
+          (click)="deleteSelected()"><i class="fas fa-trash"></i>
+    Delete Selected
+    
+  </button>
+  
+  </div>
+  <ul>
+    <li *ngFor="let t of recycledTodos">
+      <input type="checkbox" [(ngModel)]="t.selected" (change)="toggleSelect(t)" />
+      <span>{{ t.task }}</span>
+
+      <div class="icon-group">
+        <button class="icon-btn restore-btn" (click)="restoreTask(t)">
+          <i class="fas fa-undo"></i>
+        </button>
+
+        <button class="icon-btn delete-icon-btn" (click)="permanentDelete(t)">
+          <i class="fas fa-trash"></i>
+        </button>
+      </div>
+    </li>
+  </ul>
+</div>
+
+  <div id="todo-container">
+
+  <h1>To-Do List</h1>
+
+<form (ngSubmit)="addTask()">
+  <input [(ngModel)]="newTask" name="task" placeholder="Enter task" required>
+    <input type="date" [(ngModel)]="taskDate" name="date">
+  <button type="submit">Add Task</button>
+</form>
+
+
+<!-- 📋 Task list ALWAYS READY -->
+<ul id="todo-list">
+  <li *ngFor="let t of activeTodos; trackBy: trackById">
+
+        <div class="task-content">
+      <span [class.completed]="t.completed">{{ t.task }}</span>
+
+      <!-- ✅ ADD THIS (date display) -->
+<small class="task-date" *ngIf="t.date">
+  {{ t.date | date:'mediumDate' }}
+</small>
+    </div>
+
+    <div class="btn-group">
+
+      <button class="complete-btn"
+              (click)="completeTask(t)"
+              [disabled]="t.completed">
+        {{ t.completed ? 'Completed' : 'Complete' }}
+      </button>
+
+      <button class="delete-btn" (click)="deleteTask(t)">
+        <i class="fas fa-trash"></i> Delete
+      </button>
+
+    </div>
+
+  </li>
+</ul>
+
+<!-- 📭 Show ONLY after data loaded -->
+<p *ngIf="todos !== null && activeTodos.length === 0">
+  No tasks yet...
+</p>
+
+  </div>
+
+</div>

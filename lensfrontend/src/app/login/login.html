@@ -1,0 +1,47 @@
+<div class="login-page">
+
+  <div class="login-container">
+    <h2>Login</h2>
+
+    <form (ngSubmit)="onLogin()">
+
+      <div class="input-group">
+        <i class="fa-solid fa-user"></i>
+        <input type="text" [(ngModel)]="username" name="username" placeholder="Username" required>
+      </div>
+
+      <div class="input-group">
+        <i class="fa-solid fa-lock"></i>
+        <input [type]="showPassword ? 'text' : 'password'"
+               [(ngModel)]="password"
+               name="password"
+               placeholder="Password"
+               required>
+
+        <span class="toggle-icon" (click)="togglePassword($event)">
+          <i [class]="showPassword ? 'fa-solid fa-eye-slash' : 'fa-solid fa-eye'"></i>
+        </span>
+      </div>
+
+      <div *ngIf="error" class="error-msg">
+        {{ error }}
+      </div>
+
+      <div class="options">
+        <div>
+          <input type="checkbox" [(ngModel)]="rememberMe" name="remember">
+          <label>Remember me</label>
+        </div>
+
+        <a routerLink="/forgot-password">Forgot password?</a>
+      </div>
+
+      <!-- ✅ FIXED BUTTON -->
+      <button type="submit">Login</button>
+
+    </form>
+
+    <p>Don't have an account? <a routerLink="/signup">SignUp</a></p>
+  </div>
+
+</div>

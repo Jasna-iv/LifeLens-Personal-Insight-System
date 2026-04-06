@@ -1,0 +1,134 @@
+<div class="dashboard">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <h2>🔭 LifeLens</h2>
+    <ul>
+      <li class="active">Dashboard</li>
+      <li routerLink="/profile">Profile</li>
+      <li routerLink="/tasks">Tasks</li>
+      <li routerLink="/expenses">Expenses</li>
+      <li routerLink="/documents">Documents</li>
+      <li routerLink="/insights">Insights</li>
+    </ul>
+    <button class="logout" (click)="logout()">Logout</button>
+  </aside>
+
+  <!-- MAIN -->
+  <div class="main">
+
+    <!-- HEADER -->
+    <div class="header">
+      <h1>Dashboard</h1>
+      <p>{{ today | date:'fullDate' }}</p>
+    </div>
+
+    <!-- STATS -->
+    <div class="stats">
+      <div class="card"><p>Total Tasks</p><h2>{{ totalTasks }}</h2></div>
+      <div class="card"><p>Completed</p><h2>{{ completedTasks }}</h2></div>
+      <div class="card"><p>Pending</p><h2>{{ pendingTasks }}</h2></div>
+      <div class="card"><p>Balance</p><h2>₹{{ totalBalance }}</h2></div>
+    </div>
+
+    <!-- INSIGHTS -->
+    <div class="insights">
+      <div class="card"><p>Income</p><h2 class="positive">₹{{ totalIncome }}</h2></div>
+      <div class="card"><p>Expense</p><h2 class="negative">₹{{ totalExpense }}</h2></div>
+      <div class="card"><p>Savings Rate</p><h2>{{ getSavingsRate() }}%</h2></div>
+      <div class="card"><p>Status</p><h2>{{ totalBalance > 0 ? 'Saving 👍' : 'Overspending ⚠️' }}</h2></div>
+    </div>
+
+    <!-- CONTENT GRID -->
+    <div class="content-grid">
+
+      <!-- ROW 1: Task Chart + Expense Chart -->
+      <div class="card">
+        <h3>Task Overview</h3>
+        <canvas id="taskChart"></canvas>
+      </div>
+      <div class="card">
+        <h3>Expense Categories</h3>
+        <canvas id="expenseChart"></canvas>
+      </div>
+
+      <!-- ROW 2: Monthly Expenses + Calendar -->
+      <div class="card">
+        <h3>Monthly Expenses</h3>
+        <canvas id="barChart"></canvas>
+      </div>
+<div class="card calendar">
+  <div class="calendar-header">
+    <button (click)="prevMonth()">⬅</button>
+    <h3>{{ currentDate | date:'MMMM yyyy' }}</h3>
+    <button (click)="nextMonth()">➡</button>
+  </div>
+
+  <div class="days-header">
+    <span *ngFor="let d of weekDays">{{ d }}</span>
+  </div>
+
+  <div class="days">
+    <span 
+      *ngFor="let day of calendarDays"
+      [class.empty]="!day"
+      [class.active]="isSelected(day)"
+      (click)="selectDate(day)">
+      {{ day ? day.getDate() : '' }}
+    </span>
+  </div>
+</div>
+<!-- ROW 3: Tasks + Transactions -->
+
+<!-- TASKS -->
+<div class="card tasks-list">
+  <h3>Recent Tasks</h3>
+
+  <div class="inner-card">
+
+    <!-- ✅ EMPTY STATE -->
+    <p *ngIf="filteredTasks.length === 0" class="empty-msg">
+    --- No tasks for this date ---
+    </p>
+
+    <!-- ✅ LIST -->
+    <div class="task" *ngFor="let t of filteredTasks">
+      <span>{{ t.title }}</span>
+      <span [ngClass]="{'positive': t.completed,'negative': !t.completed}">
+        {{ t.completed ? 'Done' : 'Pending' }}
+      </span>
+    </div>
+
+  </div>
+</div>
+
+
+<!-- TRANSACTIONS -->
+<div class="card transactions">
+  <h3>Recent Transactions</h3>
+
+  <div class="inner-card">
+
+    <!-- ✅ EMPTY STATE -->
+    <p *ngIf="filteredExpenses.length === 0" class="empty-msg">
+      --- No transactions for this date ---
+    </p>
+
+    <!-- ✅ LIST -->
+    <div class="txn" *ngFor="let e of filteredExpenses">
+      <div>
+        <strong>{{ e.category }}</strong><br>
+        <small>{{ e.date | date:'mediumDate' }}</small>
+      </div>
+      <span [ngClass]="{'positive': e.amount > 0,'negative': e.amount < 0}">
+        ₹{{ e.amount }}
+      </span>
+    </div>
+
+  </div>
+</div>
+    </div> <!-- end content-grid -->
+
+  </div> <!-- end main -->
+
+</div> <!-- end dashboard -->

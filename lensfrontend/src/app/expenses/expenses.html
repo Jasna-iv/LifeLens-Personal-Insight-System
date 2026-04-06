@@ -1,0 +1,97 @@
+<div class="navbar">
+  <div class="logo">🔭 LifeLens</div>
+  <div class="nav-links">
+    <button (click)="goToDashboard()">Dashboard</button>
+    <button (click)="goToTasks()">Tasks</button>
+      <button>Documents</button>
+    <button>Insights</button>
+    <button>User Profile</button>
+    <button (click)="logout()">Logout</button>
+  </div>
+</div>
+
+<div class="expense-page">
+  <header class="top-bar">
+    <h2>Income & Expense Tracker</h2>
+  </header>
+
+  <!-- Add/Edit Form -->
+  <form class="add-expense-form">
+    <input type="number" [(ngModel)]="newExpense.amount" name="amount" placeholder="Amount" required />
+    <input type="date" [(ngModel)]="newExpense.date" name="date" required />
+
+<!-- Type select -->
+<select [(ngModel)]="newExpense.type" name="type" (ngModelChange)="onTypeChange($event)" required>
+  <option value="Expense">Expense</option>
+  <option value="Income">Income</option>
+</select>
+
+<!-- Category select -->
+<select [(ngModel)]="newExpense.category" name="category" (ngModelChange)="onCategoryChange($event)" required>
+  <option value="">Select Category</option>
+  <option *ngFor="let c of categories[newExpense.type]">{{c}}</option>
+</select>
+
+<!-- Custom category -->
+<input *ngIf="showCustomCategory" type="text" placeholder="Enter category"
+       [(ngModel)]="customCategoryInput" name="customCategory" required />
+
+    <button type="button" (click)="addExpense()">
+      {{ editingExpenseId !== null ? ' Update' : ' Add' }}
+    </button>
+  </form>
+
+  <!-- Cards -->
+  <div class="cards-container">
+    <div class="card income-card">
+      <h3>Income</h3>
+      <p>₹{{ totalIncome }}</p>
+    </div>
+    <div class="card expense-card">
+      <h3>Expense</h3>
+      <p>₹{{ totalExpense }}</p>
+    </div>
+    <div class="card balance-card">
+      <h3>Balance</h3>
+      <p>₹{{ balance }}</p>
+    </div>
+  </div>
+
+  <!-- Filter -->
+  <div class="filter-month-container">
+<div class="filter-buttons">
+  <button class="all" type="button" (click)="filterByType('All')" [class.active]="selectedType==='All'">All</button>
+  <button class="inc" type="button" (click)="filterByType('Income')" [class.active]="selectedType==='Income'">Income</button>
+  <button class="exp" type="button" (click)="filterByType('Expense')" [class.active]="selectedType==='Expense'">Expense</button>
+</div>
+
+    <div class="month-filter">
+      <label>Filter by Month:</label>
+      <input type="month" [(ngModel)]="selectedMonth" name="month" (change)="filterByMonth()" />
+    </div>
+  </div>
+
+  <!-- Expense List -->
+  <ul class="expense-list">
+    <li *ngFor="let exp of filteredExpenses"
+        [ngClass]="{'income-item': exp.amount>0, 'expense-item': exp.amount<0}">
+      <div class="expense-info">
+        <strong>{{ exp.category }}</strong>
+        <p>{{ exp.date | date:'mediumDate' }}</p>
+      </div>
+      <span class="amount" [ngClass]="exp.amount>0?'income-amount':'expense-amount'">
+        {{ exp.amount>0 ? '+' : '-' }}₹{{ Math.abs(exp.amount) }}
+      </span>
+     <div class="action-buttons">
+  <button class="edit-btn" (click)="startEdit(exp)">
+    <i class="fas fa-edit"></i> Edit
+  </button>
+  <button class="delete-btn" (click)="deleteExpense(exp)">
+    <i class="fas fa-trash-alt"></i> Delete
+  </button>
+</div>
+    </li>
+  </ul>
+
+  <p *ngIf="filteredExpenses.length === 0" class="no-data">No data yet...</p>
+</div>
