@@ -1,11 +1,14 @@
+/* ================= GLOBAL ================= */
 :host {
-    display: block;
-    height: 100vh;
-    font-family: Arial, sans-serif;
-    background-image: url('/images/todo.jpg');
-    background-size: cover;
-    background-position: center;
+  display: block;
+  height: 100vh;
+  font-family: Arial, sans-serif;
+  background-image: url('/images/todo.jpg');
+  background-size: cover;
+  background-position: center;
 }
+
+/* ================= NAVBAR ================= */
 .navbar {
   display: flex;
   justify-content: space-between;
@@ -35,45 +38,45 @@
   color: #6bb26c;
 }
 
-/* Heading */
+/* ================= HEADING ================= */
 h1 {
-    font-family: 'Press Start 2P', cursive;
-    font-size: 34px;
-    text-align: center;
-    color: #3eaa57;
-    
-    margin-bottom: 20px;
+  font-family: 'Press Start 2P', cursive;
+  font-size: 34px;
+  text-align: center;
+  color: #3eaa57;
+  margin-bottom: 20px;
 }
 
-
-/* Container */
+/* ================= MAIN CONTAINER ================= */
 #todo-container {
-    background: #eeeded;
-    padding: 25px;
-    border-radius: 16px;
-    width: 480px;
-    height: 400px;
-    text-align: center;
+  background: #eeeded;
+  padding: 25px;
+  border-radius: 16px;
+  width: 480px;
+  height: 400px;
+  text-align: center;
 
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 
-    box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+  box-shadow: 0 8px 25px rgba(0,0,0,0.2);
 
-    display: flex;           /* make container flex */
-    flex-direction: column;  /* stack children vertically */
+  display: flex;
+  flex-direction: column;
 }
 
+/* ================= TASK LIST ================= */
 #todo-list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
+  list-style: none;
+  padding: 0;
+  margin: 0;
 
-    flex: 1;                 /* take all remaining space */
-    overflow-y: auto;        /* scroll if content is too tall */
+  flex: 1;
+  overflow-y: auto;
 }
+
 #todo-list p {
   text-align: center;
   color: #aaa;
@@ -81,328 +84,395 @@ h1 {
 }
 
 #todo-list li {
-    background: #e2e0e0;
-    padding: 12px 15px;
-    margin: 10px 0;
-    border-radius: 10px;
+  background: #e2e0e0;
+  padding: 12px 15px;
+  margin: 10px 0;
+  border-radius: 10px;
 
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
 
-    box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+  box-shadow: 0 3px 8px rgba(0,0,0,0.1);
 }
 
-
-
-/* Completed */
+/* Completed task style */
 .completed {
-    text-decoration: line-through;
-    opacity: 0.6;
+  text-decoration: line-through;
+  opacity: 0.6;
 }
 
-/* Buttons */
+/* ================= BUTTONS ================= */
 button {
-    color: white;
-    border: none;
-    padding: 8px 12px;
-    border-radius: 5px;
-    cursor: pointer;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 5px;
+  cursor: pointer;
 }
 
 .delete-btn {
-    background: #e74c3c;
-    display: flex;
-    align-items: center;
-    gap: 5px;
+  background: #e74c3c;
+  display: flex;
+  align-items: center;
+  gap: 5px;
 }
 
 .delete-btn:hover {
-    background: #c0392b;
-}
-.complete-btn {
-    background-color:#43a047 ;
-}
-.complete-btn:disabled {
-    background: gray;
-    cursor: not-allowed;
+  background: #c0392b;
 }
 
-/* Input */
+.complete-btn {
+  background-color: #43a047;
+}
+
+.complete-btn:disabled {
+  background: gray;
+  cursor: not-allowed;
+}
+
+/* ================= FORM ================= */
 form {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 15px;
+  display: flex;
+  gap: 10px;
+  margin-bottom: 15px;
 }
 
 input {
-    flex: 1;
-    padding: 12px;
-    border-radius: 10px;
-    border: none;
-    background: #ededed8d;
+  flex: 1;
+  padding: 12px;
+  border-radius: 10px;
+  border: none;
+  background: #ededed8d;
 
-    box-shadow: inset 2px 2px 5px rgba(0,0,0,0.15),
-                inset -2px -2px 5px rgba(177, 176, 176, 0.7);
+  box-shadow: inset 2px 2px 5px rgba(0,0,0,0.15),
+              inset -2px -2px 5px rgba(177, 176, 176, 0.7);
 }
 
-/* Add button */
 form button {
-    background: #4CAF50;
-    border-radius: 10px;
-    padding: 10px 14px;
-    font-weight: bold;
-}
-/* Overlay */
-.overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0,0,0,0.4);
-    z-index: 1400;
-}
-
-/* Menu Button */
-.menu-btn {
-    width: 45px;
-    height: 45px;
-    background-color:#4f8c30;
-    color: white;
-    font-size: 26px;
-    border-radius: 6px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: fixed;
-    top: 80px;
-    left: 20px;
-    z-index: 2000;
-}
-
-/* Menu */
-.menu {
-    position: fixed;
-    top: 0;
-    left: -220px;
-    width: 220px;
-    height: 100%;
-    background: white;
-    padding-top: 130px;
-    transition: left 0.3s ease;
-    z-index: 1500;
-}
-
-.menu.show {
-    left: 0;
-}
-.menu-option {
-    padding: 14px;
-    margin: 12px;
-    border-radius: 10px;
-    background: #e6e6e6;
-    text-align: center;
-    cursor: pointer;
-
-    box-shadow: 
-        4px 4px 8px rgba(0,0,0,0.15),
-        -4px -4px 8px rgba(255,255,255,0.8);
-
-    transition: 0.2s;
-}
-
-/* Press effect */
-.menu-option:active {
-    box-shadow: inset 3px 3px 6px rgba(0,0,0,0.2),
-                inset -3px -3px 6px rgba(255,255,255,0.7);
-}
-
-/* Active selected */
-.menu-option.active {
-    background: #dcdcdc;
-    font-weight: bold;
-}
-
-/* Popout Center Fix */
-.task-popout {
-    position: fixed;
-
-    /* Attach near menu */
-    top: 110px;         /* aligns with menu options area */
-    left: 230px;        /* just next to sidebar */
-
-    width: 260px;
-    background: #f2f2f2;
-    padding: 15px 20px;
-    border-radius: 12px;
-
-    z-index: 1600;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-}
-
-/* Hide default bullet */
-.task-popout ul {
-    list-style: none;
-    padding-left: 0;
-}
-/* Checkbox at very start */
-.task-popout ul li input[type="checkbox"] {
-    margin-right: 20px;
-    flex-shrink: 0;
-}
-/* Remove default bullets */
-.task-popout ul {
-    list-style: none;
-    padding-left: 0;
-}
-
-/* Task row container: only for Complete & Incomplete popouts */
-.task-popout.completed-box ul li,
-.task-popout.incomplete-box ul li {
-    display: flex;
-    align-items: flex-start;         /* icon+text aligned to top */
-    justify-content: space-between;  /* text left, date right */
-    padding: 8px 12px;
-    border-radius: 8px;
-    margin: 5px 0;
-    background: #f2f2f2;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-    word-break: break-word;           /* wrap long text */
-}
-
-/* Icon + task text container: popout only */
-.task-popout.completed-box ul li .task-content,
-.task-popout.incomplete-box ul li .task-content {
-    display: flex;              /* horizontal layout: icon + text */
-    align-items: center;
-    gap: 4px;
-    flex: 1 1 auto;             /* allow grow & shrink */
-    min-width: 0;               /* needed for wrapping */
-    word-break: break-word;     /* wrap long words */
-}
-
-/* Task text: popout only */
-.task-popout.completed-box ul li .task-content span,
-.task-popout.incomplete-box ul li .task-content span {
-    white-space: normal;        /* wrap if too long */
-    overflow: visible;          
-    text-overflow: clip;
-}
-
-/* Task date pinned to right: popout only */
-.task-popout.completed-box ul li .task-date,
-.task-popout.incomplete-box ul li .task-date {
-    font-size: 11px;
-    color: #64748b;
-    flex-shrink: 0;             /* don't shrink date */
-    margin-left: 100px;          /* space between text and date */
-    white-space: nowrap;        /* keep date on one line */
-}
-
-/* Colors */
-.task-popout.completed-box ul li .task-icon { color: #4CAF50; }  /* green tick */
-.task-popout.incomplete-box ul li .task-icon { color: #9c1010; } /* red cross */
-
-/* Task content in container: task text above, date below */
-#todo-list li .task-content {
-  display: flex;
-  flex-direction: column; /* stack vertically */
-  align-items: flex-start; /* left-align text */
-}
-
-#todo-list li .task-date {
-  font-size: 11px;
-  color: #64748b;
-  margin-top: 2px; /* space below task */
-}
-form {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 15px;
+  background: #4CAF50;
+  border-radius: 10px;
+  padding: 10px 14px;
+  font-weight: bold;
 }
 
 form button:hover {
-    background: #43a047;
-}
-.btn-group {
-    display: flex;
-    gap: 8px;
+  background: #43a047;
 }
 
-
-
-/* Icon buttons group */
-.icon-group {
-    display: flex;
-    gap: 8px;
+/* ================= OVERLAY & MENU ================= */
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.4);
+  z-index: 1400;
 }
 
-/* Small square icon buttons */
+.menu-btn {
+  width: 45px;
+  height: 45px;
+  background-color: #4f8c30;
+  color: white;
+  font-size: 26px;
+  border-radius: 6px;
+  cursor: pointer;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  position: fixed;
+  top: 80px;
+  left: 20px;
+  z-index: 2000;
+}
+
+.menu {
+  position: fixed;
+  top: 0;
+  left: -220px;
+  width: 220px;
+  height: 100%;
+  background: white;
+  padding-top: 130px;
+  transition: left 0.3s ease;
+  z-index: 1500;
+}
+
+.menu.show {
+  left: 0;
+}
+
+.menu-option {
+  padding: 14px;
+  margin: 12px;
+  border-radius: 10px;
+  background: #e6e6e6;
+  text-align: center;
+  cursor: pointer;
+
+  box-shadow:
+    4px 4px 8px rgba(0,0,0,0.15),
+    -4px -4px 8px rgba(255,255,255,0.8);
+
+  transition: 0.2s;
+}
+
+.menu-option:active {
+  box-shadow:
+    inset 3px 3px 6px rgba(0,0,0,0.2),
+    inset -3px -3px 6px rgba(255,255,255,0.7);
+}
+
+.menu-option.active {
+  background: #dcdcdc;
+  font-weight: bold;
+}
+
+/* ================= POPOUT ================= */
+.task-popout {
+  position: fixed;
+  top: 110px;
+  left: 230px;
+  width: 280px;
+  max-height: 400px;
+  overflow-y: auto;
+  background: #f8f9fa;
+  padding: 15px;
+  border-radius: 14px;
+  z-index: 1600;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.25);
+}
+
+.task-popout h3 {
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.task-popout ul {
+  list-style: none;
+  padding: 0;
+}
+
+.task-popout.completed-box ul li,
+.task-popout.incomplete-box ul li {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.task-popout .task-content {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  flex: 1;
+  min-width: 0;
+}
+
+.task-popout .task-content span {
+  white-space: normal;
+  word-break: break-word;
+  line-height: 1.8;
+}
+
+.task-popout .task-date {
+  flex-shrink: 0;
+  white-space: nowrap;
+  font-size: 11px;
+  color: #888;
+  margin-top: 4px;
+}
+
+.completed-box .task-icon { color: #4CAF50; }
+.incomplete-box .task-icon { color: #e53935; }
+
+/* ================= MAIN TASK ================= */
+#todo-list li {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+#todo-list li .task-content {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  flex: 1;
+  min-width: 0;
+}
+
+#todo-list li .task-content span {
+  white-space: normal;
+  word-break: break-word;
+  line-height: 1.3;
+}
+
+#todo-list li .task-date {
+  margin-top: 3px;
+  font-size: 11px;
+  color: #64748b;
+}
+
+/* ================= ICON BUTTONS ================= */
+.btn-group { display: flex; gap: 8px; }
+.icon-group { display: flex; gap: 8px; }
+
 .icon-btn {
-    width: 28px;
-    height: 28px;
-    border-radius: 6px;
-    border: none;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
 }
 
-/* Restore (green) */
 .restore-btn {
-    background: #4CAF50;
-    color: white;
-    margin-left: 150px;
-    margin-top: -23px;
-    margin-bottom: 8px;
+  background: #4CAF50;
+  color: white;
+  margin-left: 150px;
+  margin-top: -23px;
+  margin-bottom: 8px;
 }
 
-/* Delete (green style like image) */
 .delete-icon-btn {
-    background: #4CAF50;
-    color: white;
-    margin-top: -23px;
-     margin-bottom: 12px;
+  background: #4CAF50;
+  color: white;
+  margin-top: -23px;
+  margin-bottom: 12px;
 }
+
+/* ================= INPUT ================= */
 input:focus {
   outline: none;
   border: none;
   box-shadow: none;
 }
-/* Flex container for Select All + Delete Selected */
+
+/* ================= RECYCLE ================= */
 .recycle-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
 }
 
-/* Label for Select All */
 .recycle-header label {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    font-weight: bold;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-weight: bold;
 }
 
-/* Delete Selected button styling */
 .delete-all-btn {
-    background-color: #ff4d4f !important; /* bright red */
-    color: white !important;
-    border: none;
-    padding: 6px 12px;
-    cursor: pointer;
-    border-radius: 4px;
-    margin-bottom: 10px;
-    font-size:x-small;
-    height: 28px;
-    width: 110px;
+  background-color: #ff4d4f !important;
+  color: white !important;
+  border: none;
+  padding: 6px 12px;
+  cursor: pointer;
+  border-radius: 4px;
+  margin-bottom: 10px;
+  font-size: x-small;
+  height: 28px;
+  width: 110px;
 }
 
 .delete-all-btn:hover {
-    background-color: #ff7875 !important; /* slightly lighter red */
+  background-color: #ff7875 !important;
+}
+
+/* ================= FINAL RECYCLE BIN FIX ================= */
+
+/* Increase width */
+.task-popout.recycle-box {
+  width: 420px;
+  max-height: 420px;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+/* Fix checkbox (IMPORTANT 🔥) */
+.task-popout.recycle-box input[type="checkbox"] {
+  flex: 0 !important;
+  width: auto !important;
+  height: auto !important;
+}
+
+/* Clean row layout */
+.task-popout.recycle-box ul li {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+
+  background: #fff5f5;
+  border-left: 4px solid #ff4d4f;
+  padding: 12px;
+  border-radius: 10px;
+}
+
+/* Text wrapping */
+.task-popout.recycle-box ul li span {
+  flex: 1;
+  min-width: 0;
+
+  white-space: normal;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+/* Buttons right side */
+.task-popout.recycle-box .icon-group {
+  display: flex;
+  gap: 6px;
+  flex-shrink: 0;
+  align-items: center;
+}
+
+/* Remove old broken spacing */
+.restore-btn,
+.delete-icon-btn {
+  margin: 0 !important;
+
+}
+/* ================= ADD-ON (IMPROVEMENT) ================= */
+.task-popout ul li {
+  padding: 10px;
+  margin-bottom: 10px;
+  border-radius: 10px;
+  background: #ffffff;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+}
+
+.task-popout .task-content span {
+  line-height: 1.5;
+  font-size: 13px;
+}
+
+.task-popout .task-date {
+  margin-left: 8px;
+  color: #777;
+}
+
+.task-popout.recycle-box ul li {
+  background: #fff5f5;
+  border-left: 4px solid #ff4d4f;
+}
+
+.task-popout.recycle-box ul li span {
+  margin-left: 22px;
+}
+
+.task-popout.recycle-box .icon-group {
+  margin-left: 22px;
+  margin-top: 6px;
 }

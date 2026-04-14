@@ -3,6 +3,7 @@ import { Chart } from 'chart.js/auto';
 import { HttpClient } from '@angular/common/http';
 import { Router, RouterModule } from '@angular/router';
 import { CommonModule, DatePipe } from '@angular/common';
+import { ViewChild, ElementRef, AfterViewInit } from '@angular/core';
 
 @Component({
   selector: 'app-dashboard',
@@ -11,7 +12,7 @@ import { CommonModule, DatePipe } from '@angular/common';
   templateUrl: './dashboard.html',
   styleUrls: ['./dashboard.css']
 })
-export class DashboardComponent implements OnInit {
+export class DashboardComponent implements OnInit, AfterViewInit {
 
   // ---------------- DATA ----------------
   tasks: any[] = [];
@@ -43,13 +44,16 @@ export class DashboardComponent implements OnInit {
   expenseChart: any;
   barChart: any;
 
-  API = 'http://127.0.0.1:8000';
+  API_URL = 'http://localhost:8000';
 
-  // ✅ prevent double filtering
   dataLoaded = {
     tasks: false,
     expenses: false
   };
+
+  @ViewChild('taskChart') taskChartRef!: ElementRef;
+  @ViewChild('expenseChart') expenseChartRef!: ElementRef;
+  @ViewChild('barChart') barChartRef!: ElementRef;
 
   constructor(
     private http: HttpClient,
@@ -72,6 +76,16 @@ export class DashboardComponent implements OnInit {
     }, 25000);
   }
 
+  ngAfterViewInit() {}
+
+  // ---------------- SAFE API PARSER ----------------
+  private extractList(res: any, key: string): any[] {
+    if (Array.isArray(res)) return res;
+    if (res?.results) return res.results;
+    if (res?.[key]) return res[key];
+    return [];
+  }
+
   // ---------------- CALENDAR ----------------
   generateCalendar() {
     this.calendarDays = [];
@@ -92,24 +106,14 @@ export class DashboardComponent implements OnInit {
   }
 
   nextMonth() {
-    this.currentDate = new Date(
-      this.currentDate.getFullYear(),
-      this.currentDate.getMonth() + 1,
-      1
-    );
-
+    this.currentDate = new Date(this.currentDate.getFullYear(), this.currentDate.getMonth() + 1, 1);
     this.selectedDate = null;
     this.generateCalendar();
     this.filterByMonth();
   }
 
   prevMonth() {
-    this.currentDate = new Date(
-      this.currentDate.getFullYear(),
-      this.currentDate.getMonth() - 1,
-      1
-    );
-
+    this.currentDate = new Date(this.currentDate.getFullYear(), this.currentDate.getMonth() - 1, 1);
     this.selectedDate = null;
     this.generateCalendar();
     this.filterByMonth();
@@ -117,7 +121,6 @@ export class DashboardComponent implements OnInit {
 
   selectDate(day: Date | null) {
     if (!day) return;
-
     this.selectedDate = day;
     this.filterByDate(day);
   }
@@ -127,43 +130,85 @@ export class DashboardComponent implements OnInit {
     return day.toDateString() === this.selectedDate.toDateString();
   }
 
-  // ---------------- FILTER BY MONTH ----------------
+  // ---------------- LOAD TASKS ----------------
+  loadTasks() {
+    this.http.get(`${this.API_URL}/tasks/`, { withCredentials: true }).subscribe(res => {
+
+      const tasks = this.extractList(res, 'tasks')
+        .filter((t: any) => !t.deleted)
+        .map((t: any) => ({
+          id: t.id,
+          title: t.title,
+          completed: t.completed,
+          deleted: t.deleted,
+          date: t.date ? new Date(t.date) : null
+        }));
+
+      this.tasks = tasks;
+
+      this.dataLoaded.tasks = true;
+      this.runInitialFilter();
+    });
+  }
+
+  // ---------------- LOAD EXPENSES ----------------
+  loadExpenses() {
+    this.http.get(`${this.API_URL}/expenses/`, { withCredentials: true }).subscribe(res => {
+
+      const exp = this.extractList(res, 'expenses')
+        .map((e: any) => ({
+          id: e.id,
+          amount: Number(e.amount),
+          category: e.category,
+          date: e.date ? new Date(e.date) : null
+        }));
+
+      this.expenses = exp;
+
+      this.dataLoaded.expenses = true;
+      this.runInitialFilter();
+    });
+  }
+
+  // ---------------- INITIAL FILTER ----------------
+  runInitialFilter() {
+    if (this.dataLoaded.tasks && this.dataLoaded.expenses) {
+      this.filterByMonth();
+    }
+  }
+
+  // ---------------- FILTER MONTH ----------------
   filterByMonth() {
-    const month = this.currentDate.getMonth();
-    const year = this.currentDate.getFullYear();
+    const m = this.currentDate.getMonth();
+    const y = this.currentDate.getFullYear();
 
-    const mTasks = this.tasks.filter(t => {
-      if (!t.date) return false;
-      const d = new Date(t.date);
-      return d.getMonth() === month && d.getFullYear() === year;
-    });
+    const mTasks = this.tasks.filter(t =>
+      t.date && t.date.getMonth() === m && t.date.getFullYear() === y
+    );
 
-    const mExpenses = this.expenses.filter(e => {
-      if (!e.date) return false;
-      const d = new Date(e.date);
-      return d.getMonth() === month && d.getFullYear() === year;
-    });
+    const mExpenses = this.expenses.filter(e =>
+      e.date && e.date.getMonth() === m && e.date.getFullYear() === y
+    );
 
     this.applyFilteredData(mTasks, mExpenses);
   }
 
-  // ---------------- FILTER BY DATE ----------------
+  // ---------------- FILTER DATE ----------------
   filterByDate(date: Date) {
-    const selected = date.toDateString();
-
     const dTasks = this.tasks.filter(t =>
-      t.date && new Date(t.date).toDateString() === selected
+      t.date && t.date.toDateString() === date.toDateString()
     );
 
     const dExpenses = this.expenses.filter(e =>
-      e.date && new Date(e.date).toDateString() === selected
+      e.date && e.date.toDateString() === date.toDateString()
     );
 
     this.applyFilteredData(dTasks, dExpenses);
   }
 
-  // ---------------- APPLY FILTERED DATA ----------------
+  // ---------------- APPLY DATA ----------------
   applyFilteredData(tasks: any[], expenses: any[]) {
+
     this.filteredTasks = tasks;
     this.filteredExpenses = expenses;
 
@@ -172,74 +217,29 @@ export class DashboardComponent implements OnInit {
     this.pendingTasks = tasks.filter(t => !t.completed).length;
 
     this.totalIncome = expenses
-      .filter(e => Number(e.amount) > 0)
-      .reduce((s, e) => s + Number(e.amount), 0);
+      .filter(e => e.amount > 0)
+      .reduce((s, e) => s + e.amount, 0);
 
     this.totalExpense = expenses
-      .filter(e => Number(e.amount) < 0)
-      .reduce((s, e) => s + Math.abs(Number(e.amount)), 0);
+      .filter(e => e.amount < 0)
+      .reduce((s, e) => s + Math.abs(e.amount), 0);
 
     this.totalBalance = this.totalIncome - this.totalExpense;
 
-    setTimeout(() => {
-      this.renderTaskChart();
-      this.renderExpenseChart(expenses);
-      this.renderBarChart(expenses);
-    }, 100);
-  }
+    this.cdr.detectChanges();
 
-  // ---------------- LOAD TASKS ----------------
-  loadTasks() {
-    this.http.get<any>(`${this.API}/tasks/`)
-      .subscribe(res => {
-
-        let tasks = [];
-
-        if (Array.isArray(res)) tasks = res;
-        else if (res.results) tasks = res.results;
-        else if (res.tasks) tasks = res.tasks;
-
-        this.tasks = tasks.filter((t: any) => !t.deleted);
-
-        this.dataLoaded.tasks = true;
-        this.runInitialFilter();
-
-        this.cdr.detectChanges();
-      });
-  }
-
-  // ---------------- LOAD EXPENSES ----------------
-  loadExpenses() {
-    this.http.get<any>(`${this.API}/expenses/`)
-      .subscribe(res => {
-
-        let exp = [];
-
-        if (Array.isArray(res)) exp = res;
-        else if (res.results) exp = res.results;
-        else if (res.expenses) exp = res.expenses;
-
-        this.expenses = exp;
-
-        this.dataLoaded.expenses = true;
-        this.runInitialFilter();
-
-        this.cdr.detectChanges();
-      });
-  }
-
-  // ✅ RUN FILTER ONLY AFTER BOTH LOADED
-  runInitialFilter() {
-    if (this.dataLoaded.tasks && this.dataLoaded.expenses) {
-      this.filterByMonth();
-    }
+    this.renderTaskChart();
+    this.renderExpenseChart(expenses);
+    this.renderBarChart(expenses);
   }
 
   // ---------------- CHARTS ----------------
   renderTaskChart() {
+    if (!this.taskChartRef) return;
+
     if (this.taskChart) this.taskChart.destroy();
 
-    this.taskChart = new Chart('taskChart', {
+    this.taskChart = new Chart(this.taskChartRef.nativeElement, {
       type: 'doughnut',
       data: {
         labels: ['Completed', 'Pending'],
@@ -252,48 +252,45 @@ export class DashboardComponent implements OnInit {
   }
 
   renderExpenseChart(exp: any[]) {
+    if (!this.expenseChartRef) return;
+
     if (this.expenseChart) this.expenseChart.destroy();
 
     const map: any = {};
-
     exp.forEach(e => {
       const key = e.category || 'Other';
-      if (!map[key]) map[key] = 0;
-      map[key] += Number(e.amount);
+      map[key] = (map[key] || 0) + e.amount;
     });
 
-    this.expenseChart = new Chart('expenseChart', {
+    this.expenseChart = new Chart(this.expenseChartRef.nativeElement, {
       type: 'pie',
       data: {
         labels: Object.keys(map),
         datasets: [{
-          data: Object.values(map),
-          backgroundColor: ['#3b82f6','#22c55e','#f59e0b','#ef4444','#8b5cf6']
+          data: Object.values(map)
         }]
       }
     });
   }
 
   renderBarChart(exp: any[]) {
+    if (!this.barChartRef) return;
+
     if (this.barChart) this.barChart.destroy();
 
     const monthly = new Array(12).fill(0);
 
     exp.forEach(e => {
-      const date = new Date(e.date);
-      if (!isNaN(date.getTime())) {
-        monthly[date.getMonth()] += Number(e.amount);
+      if (e.date) {
+        monthly[e.date.getMonth()] += e.amount;
       }
     });
 
-    this.barChart = new Chart('barChart', {
+    this.barChart = new Chart(this.barChartRef.nativeElement, {
       type: 'bar',
       data: {
         labels: ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],
-        datasets: [{
-          data: monthly,
-          backgroundColor: '#3b82f6'
-        }]
+        datasets: [{ data: monthly }]
       }
     });
   }
@@ -304,8 +301,13 @@ export class DashboardComponent implements OnInit {
     return ((this.totalBalance / this.totalIncome) * 100).toFixed(1);
   }
 
+  // ---------------- NAV ----------------
   logout() {
     localStorage.removeItem('isLoggedIn');
     this.router.navigate(['']);
+  }
+
+  goToProfile() {
+    this.router.navigate(['/profile']);
   }
 }

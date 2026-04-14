@@ -1,0 +1,74 @@
+<div class="doc-container">
+
+  <!-- HEADER -->
+  <div class="doc-header">
+    <h2>📁 My Documents</h2>
+
+    <!-- FILTER -->
+    <select [(ngModel)]="filterType">
+      <option value="">All Files</option>
+      <option value="pdf">PDF</option>
+      <option value="image">Image</option>
+      <option value="doc">Doc</option>
+      <option value="other">Other</option>
+    </select>
+  </div>
+
+  <!-- UPLOAD BOX -->
+  <div class="upload-card">
+
+    <input type="text" [(ngModel)]="title" placeholder="Document Title">
+
+    <select [(ngModel)]="doc_type">
+      <option value="">Select Type</option>
+      <option value="pdf">PDF</option>
+      <option value="image">Image</option>
+      <option value="doc">Doc</option>
+      <option value="other">Other</option>
+    </select>
+
+    <input type="file" (change)="onFileChange($event)">
+
+    <button (click)="upload()">⬆ Upload Document</button>
+
+  </div>
+
+  <!-- TABLE -->
+  <div class="table-card">
+
+    <table>
+      <thead>
+        <tr>
+          <th>Title</th>
+          <th>Type</th>
+          <th>Date</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr *ngFor="let d of filteredDocs()">
+
+          <td>{{ d.title }}</td>
+          <td>
+            <span class="badge" [ngClass]="d.type">
+              {{ d.type }}
+            </span>
+          </td>
+
+          <td>{{ d.uploaded_at | date:'mediumDate' }}</td>
+
+          <td>
+            <button class="download-btn" (click)="download(d.file_url)">
+              ⬇ Download
+            </button>
+          </td>
+
+        </tr>
+      </tbody>
+
+    </table>
+
+  </div>
+
+</div>

@@ -1,0 +1,131 @@
+.doc-container {
+  padding: 25px;
+  background: #0f172a;
+  min-height: 100vh;
+  color: white;
+  font-family: 'Poppins', sans-serif;
+}
+
+/* HEADER */
+.doc-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.doc-header h2 {
+  font-size: 22px;
+}
+
+.doc-header select {
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: none;
+  background: #1e293b;
+  color: white;
+}
+
+/* UPLOAD CARD */
+.upload-card {
+  background: #1e293b;
+  padding: 15px;
+  border-radius: 12px;
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+
+.upload-card input,
+.upload-card select {
+  padding: 10px;
+  border-radius: 8px;
+  border: none;
+  background: #0f172a;
+  color: white;
+  flex: 1;
+  min-width: 150px;
+}
+
+.upload-card button {
+  padding: 10px 15px;
+  border-radius: 8px;
+  border: none;
+  background: #6366f1;
+  color: white;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.upload-card button:hover {
+  background: #4f46e5;
+}
+
+/* TABLE CARD */
+.table-card {
+  background: #1e293b;
+  padding: 15px;
+  border-radius: 12px;
+  overflow-x: auto;
+}
+
+/* TABLE */
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+thead {
+  background: #0f172a;
+}
+
+th, td {
+  padding: 12px;
+  text-align: left;
+  border-bottom: 1px solid #334155;
+}
+
+/* BADGES */
+.badge {
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+  text-transform: uppercase;
+}
+
+.badge.pdf {
+  background: #ef4444;
+}
+
+.badge.image {
+  background: #22c55e;
+}
+
+.badge.doc {
+  background: #3b82f6;
+}
+
+.badge.other {
+  background: #f59e0b;
+}
+
+/* BUTTON */
+.download-btn {
+  background: #10b981;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  color: white;
+  transition: 0.3s;
+}
+
+.download-btn:hover {
+  background: #059669;
+}
+
+/* HOVER ROW */
+tr:hover {
+  background: rgba(255,255,255,0.05);
+}

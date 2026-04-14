@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap');
+
 .login-page {
     height: 100vh;
     display: flex;
@@ -6,8 +8,14 @@
 
     background: url('/images/bg.jpg') no-repeat center center fixed;
     background-size: cover;
+
+    font-family: 'Poppins', sans-serif;
+
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
 
+/* LOGIN BOX */
 .login-container {
     background: rgba(0, 0, 0, 0.35);
     backdrop-filter: blur(10px);
@@ -17,28 +25,49 @@
     max-width: 400px;
     text-align: center;
     color: #fff;
+
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
 }
 
+/* TITLE */
 .login-container h2 {
     margin-bottom: 25px;
+    font-size: 24px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
 }
 
-/* Inputs */
+/* INPUT GROUP */
 .input-group {
     position: relative;
     width: 320px;
     margin-bottom: 18px;
 }
 
+/* INPUT */
 .input-group input {
     width: 100%;
     padding: 12px 45px 12px 38px;
+
     border-radius: 10px;
     border: none;
+
     background: rgba(255,255,255,0.1);
     color: #fff;
+
+    font-size: 14px;
+    font-weight: 400;
+
+    transition: 0.2s ease;
 }
 
+/* FOCUS EFFECT (NO BLACK BORDER) */
+.input-group input:focus {
+    outline: none;
+    background: rgba(255, 255, 255, 0.15);
+}
+
+/* ICON */
 .input-group i {
     position: absolute;
     left: 12px;
@@ -47,6 +76,7 @@
     color: #ccc;
 }
 
+/* PASSWORD TOGGLE */
 .toggle-icon {
     position: absolute;
     right: -36px;
@@ -55,36 +85,101 @@
     cursor: pointer;
 }
 
-/* Options */
+/* OPTIONS */
 .options {
     display: flex;
     justify-content: space-between;
-    font-size: 0.9rem;
+    font-size: 13px;
     margin-bottom: 20px;
+    color: #ddd;
 }
 
-.options a {
+/* LINKS */
+.options a,
+.login-container p a {
     color: #8a84ff;
     text-decoration: none;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 500;
+    transition: 0.3s;
+    margin-left: 4px;
 }
 
-/* Button */
+.options a:hover,
+.login-container p a:hover {
+    text-decoration: underline;
+    color: #b1adff;
+}
+
+
+/* 🔥 BUTTON (UPDATED FOR SPINNER) */
 button {
     width: 100%;
     padding: 12px;
     border-radius: 25px;
     border: none;
+
     background: #5450a1;
     color: #fff;
+
+    font-size: 15px;
+    font-weight: 500;
+
     cursor: pointer;
+    transition: 0.3s ease;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
+/* HOVER */
 button:hover {
     background: #7872cd;
+    transform: translateY(-2px);
 }
 
-/* Error */
+/* DISABLED */
+button:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+/* BUTTON LAYOUT */
+.login-btn {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* CONTENT INSIDE BUTTON */
+.btn-content {
+  display: flex;
+  align-items: center;
+  gap: 10px; /* space between text & spinner */
+}
+
+/* SPINNER */
+.btn-loader {
+  width: 16px;
+  height: 16px;
+  border: 3px solid rgba(255,255,255,0.3);
+  border-top: 3px solid white;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+/* ERROR */
 .error-msg {
     color: #ff6b6b;
     margin-bottom: 10px;
+    font-size: 13px;
+}
+
+/* ANIMATION */
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
 }

@@ -5,13 +5,20 @@
 
     <form (ngSubmit)="onLogin()">
 
+      <!-- USERNAME -->
       <div class="input-group">
         <i class="fa-solid fa-user"></i>
-        <input type="text" [(ngModel)]="username" name="username" placeholder="Username" required>
+        <input type="text"
+               [(ngModel)]="username"
+               name="username"
+               placeholder="Username"
+               required>
       </div>
 
+      <!-- PASSWORD -->
       <div class="input-group">
         <i class="fa-solid fa-lock"></i>
+
         <input [type]="showPassword ? 'text' : 'password'"
                [(ngModel)]="password"
                name="password"
@@ -23,21 +30,27 @@
         </span>
       </div>
 
+      <!-- ERROR -->
       <div *ngIf="error" class="error-msg">
         {{ error }}
       </div>
 
+      <!-- OPTIONS -->
       <div class="options">
         <div>
           <input type="checkbox" [(ngModel)]="rememberMe" name="remember">
           <label>Remember me</label>
         </div>
 
-        <a routerLink="/forgot-password">Forgot password?</a>
+        <a (click)="goForgotPassword()">Forgot password?</a>
       </div>
+      <button type="submit" [disabled]="loading" class="login-btn">
+        <span class="btn-content">
+          {{ loading ? 'Logging in...' : 'Login' }}
 
-      <!-- ✅ FIXED BUTTON -->
-      <button type="submit">Login</button>
+          <span *ngIf="loading" class="btn-loader"></span>
+        </span>
+      </button>
 
     </form>
 

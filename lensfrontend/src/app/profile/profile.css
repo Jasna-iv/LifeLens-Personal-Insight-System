@@ -1,0 +1,470 @@
+/* ================= GLOBAL ================= */
+body {
+  margin: 0;
+  font-family: 'Inter', 'Segoe UI', sans-serif;
+  background: #fff5f5;
+  
+}
+
+/* ================= CONTAINER ================= */
+.profile-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+.profile-name {
+  margin-left: 10px;
+  color: #d66062;
+  font-size: 27px;
+  font-weight: 600;
+  margin-bottom: -6px;
+}
+
+.profile-sub {
+  font-size: 14px;
+  margin-left: 12px;
+  color: #888;
+  margin-bottom: 15px;
+}
+
+.edit-title {
+  font-size: 20px;
+  color: #d66062;
+  margin-left: 10px;
+}
+
+.edit-sub {
+  font-size: 13px;
+  color: #888;
+  margin-bottom: 8px;
+  margin-top: -14px;
+  margin-left: 12px;
+}
+
+/* ================= NAVBAR ================= */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 40px; /* reduced height */
+  background: #ff5e61df;
+  color: white;
+}
+
+.logo {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+/* NAV BUTTONS */
+.nav-links button {
+  margin-left: 10px;
+  padding: 6px 14px;
+  border: none;
+  background: transparent;
+  color: #ffeaea;
+  border-radius: 16px;
+  cursor: pointer;
+  font-size: 13px;
+  transition: 0.2s;
+}
+
+.nav-links button:hover {
+  background: rgba(255,255,255,0.2);
+  color: #fff;
+}
+
+/* ================= CENTER ================= */
+.main-center {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* ================= WRAPPER ================= */
+.profile-wrapper {
+  display: flex;
+  width: 700px;              /* reduced width */
+  min-height: 460px;
+  background: #ffffff;
+  border-radius: 14px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+  overflow: hidden;
+  border: 2px solid #ff5e61df;
+  box-shadow: 0 10px 30px rgb(246, 179, 179);
+}
+
+
+/* ================= SIDEBAR ================= */
+.sidebar {
+  width: 85px;
+  background: #ff5e62;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 25px;
+    gap: 24px; 
+}
+
+.sidebar .icon {
+  width: 53px;
+  height: 64px;
+  background: rgba(255,255,255,0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: 0.2s;
+  font-size: 16px;
+  margin-top: 14px;
+}
+
+.sidebar .icon:hover {
+  background: rgba(255,255,255,0.4);
+}
+
+.sidebar .icon.active {
+  background: #ffffff;
+  color: #ff5e62;
+}
+
+/* ================= CONTENT ================= */
+.profile-content {
+  flex: 1;
+  padding: 35px 40px;
+}
+
+.profile-content h1 {
+  font-size: 24px;
+  font-weight: 600;
+  margin-bottom: 20px;
+}
+
+/* ================= BODY ================= */
+.profile-body {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 30px;
+  flex-wrap: wrap;
+}
+
+/* ================= LEFT ================= */
+.form-section {
+  width: 55%;
+  min-width: 260px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center; /* 🔥 vertical alignment */
+}
+
+.form-section p {
+  font-size: 14px;
+  margin: 10px 0;
+  color: #555;
+}
+
+.form-section b {
+  color: #000;
+}
+.info-card {
+  background: #fffafa;
+  border: 1px solid #db8d8d;
+  border-radius: 10px;
+  padding: 12px 15px;
+  margin-bottom: 12px;
+  transition: all 0.2s ease;
+}
+
+/* ================= VIEW PAGE ONLY EFFECTS ================= */
+.profile-container:not(.edit-mode) .info-card:hover {
+  border-color: #ff5e62;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 15px rgba(255, 94, 98, 0.15);
+}
+
+/* focus effect ONLY in view page */
+.profile-container:not(.edit-mode) .info-card:focus-within {
+  border-color: #ff5e62;
+  box-shadow: 0 0 8px rgba(255, 94, 98, 0.2);
+}
+
+/* ================= EDIT PAGE DISABLE EVERYTHING ================= */
+.edit-mode .info-card:hover,
+.edit-mode .info-card:focus-within {
+  border-color: #db8d8d !important;
+  box-shadow: none !important;
+  transform: none !important;
+}
+
+/* ================= INPUT (NO EFFECT AT ALL) ================= */
+input,
+textarea {
+  width: 100%;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-size: 14px;
+  color: #222;
+  box-shadow: none;
+}
+
+/* REMOVE ALL FOCUS EFFECTS */
+input:focus,
+textarea:focus,
+input:focus-visible,
+textarea:focus-visible {
+  outline: none !important;
+  box-shadow: none !important;
+  border: none !important;
+}
+
+/* ================= EDIT MODE FORCE CLEAN ================= */
+.edit-mode input,
+.edit-mode textarea {
+  outline: none !important;
+  border: none !important;
+  box-shadow: none !important;
+  background: transparent !important;
+}
+
+/* wrapper */
+.input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+/* icon hidden by default */
+.null-icon {
+  position: absolute;
+  right: 10px;
+  font-size: 16px;
+  opacity: 0;
+  transform: scale(0.8);
+  transition: 0.2s;
+  pointer-events: none;
+}
+
+/* show icon ONLY in edit mode when hovering email */
+.edit-mode .email-box:hover .null-icon,
+.edit-mode .email-box:focus-within .null-icon {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.security-input {
+  position: relative;
+}
+
+.security-input input {
+  width: 100%;
+  padding-right: 40px; /* space for icon */
+}
+
+.toggle-icon {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  color: #888;
+  font-size: 14px;
+}
+
+.toggle-icon:hover {
+  color: #ff5e62;
+}
+
+/* label */
+.info-label {
+  font-size: 12px;
+  color: #888;
+  margin-bottom: 3px;
+}
+
+/* value */
+.info-value {
+  font-size: 14px;
+  font-weight: 500;
+  color: #222;
+}
+/* ================= SECURITY PAGE ================= */
+.security-box {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-top: 10px;
+}
+
+/* title */
+.security-box h1 {
+  font-size: 22px;
+  color: #222;
+  margin-bottom: 10px;
+}
+
+/* input wrapper style */
+.security-input {
+  background: #fffafa;
+  border: 1px solid #db8d8d;
+  border-radius: 10px;
+  padding: 12px 15px;
+  transition: 0.2s;
+}
+
+/* hover effect */
+.security-input:hover {
+  border-color: #ff5e62;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 15px rgba(255, 94, 98, 0.12);
+}
+
+/* actual input */
+.security-input input {
+  width: 100%;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-size: 14px;
+  color: #222;
+}
+
+/* button style upgrade */
+.security-box button {
+  width: fit-content;
+  padding: 10px 20px;
+  background: #ff5e62;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.security-box button:hover {
+  background: #e14c50;
+  transform: scale(1.03);
+}
+/* ================= IMAGE ================= */
+.image-section {
+  width: 35%;
+  display: flex;
+  justify-content: center;
+}
+
+.image-box {
+  width: 130px;
+  height: 130px;
+  position: relative;
+  margin-top: -49px;
+  margin-left: -60px;
+}
+
+.image-box img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #ff5e62;
+}
+
+.image-section-edit {
+  width: 35%;
+  display: flex;
+  justify-content: center;
+}
+
+.image-box-edit {
+  width: 130px;
+  height: 130px;
+  position: relative;
+  margin-top: -36px;
+  margin-left: -60px;
+}
+
+.image-box-edit img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #ff5e62;
+}
+
+.empty-circle {
+  width: 100%;
+  height: 100%;
+  border: 2px dashed #e5a7a9;
+  border-radius: 50%;
+}
+
+/* CAMERA BUTTON */
+.camera-icon {
+  position: absolute;
+  bottom: 8px;
+  right: 8px;
+  width: 34px;
+  height: 34px;
+  background: #ff5e62;
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: 0.2s;
+  box-shadow: 0 5px 15px rgba(255,94,98,0.3);
+}
+
+/* SVG size */
+.camera-icon svg {
+  width: 18px;
+  height: 18px;
+}
+
+/* hover */
+.camera-icon:hover {
+  transform: scale(1.1);
+  background: #e14c50;
+}
+
+/* ================= BUTTON ================= */
+button {
+  margin-top: 15px;
+  padding: 9px 18px;
+  border: none;
+  background: #ff5e62;
+  color: white;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: 0.2s;
+  font-size: 13px;
+}
+
+button:hover {
+  opacity: 0.9;
+}
+
+/* ================= BUTTON GROUP ================= */
+.btns {
+  display: flex;
+  gap: 10px;
+}
+
+/* ================= NOTIFICATIONS ================= */
+label {
+  display: flex;
+  align-items: center;
+  margin-top: 12px;
+  gap: 8px;
+  font-size: 13px;
+  color: #444;
+}
+
+input[type="checkbox"] {
+  transform: scale(1.1);
+  accent-color: #ff5e62;
+}

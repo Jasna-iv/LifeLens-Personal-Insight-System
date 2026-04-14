@@ -1,4 +1,4 @@
-import { Component, OnInit ,ChangeDetectorRef} from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
@@ -6,11 +6,11 @@ import { Router } from '@angular/router';
 
 interface Todo {
   id: number;
-  task: string;        // keep same (UI uses this)
+  task: string;
   completed: boolean;
-  deleted: boolean; 
-  selected?: boolean;    // keep recycle feature
-    date?: string; 
+  deleted: boolean;
+  selected?: boolean;
+  date?: string;
 }
 
 @Component({
@@ -24,138 +24,150 @@ export class TasksComponent implements OnInit {
 
   todos: Todo[] = [];
   newTask = '';
-  selectedToDelete: number[] = []; // store ids of selected tasks
-  allSelected = false;             // track select all checkbox
+  taskDate: string = '';
 
-  API_URL = 'http://127.0.0.1:8000';
+  selectedToDelete: number[] = [];
+
+  API_URL = 'http://localhost:8000';
 
   activeBox: 'completed' | 'incompleted' | 'recycle' | null = null;
   menuOpen = false;
   recycleOpen = false;
 
   selectAll = false;
-  taskDate: string = '';   // ✅ ADD THIS
 
-  constructor(private http: HttpClient, private cdr: ChangeDetectorRef,private router: Router) {}
+  constructor(
+    private http: HttpClient,
+    private cdr: ChangeDetectorRef,
+    private router: Router
+  ) {}
 
   ngOnInit() {
-    if (localStorage.getItem('isLoggedIn') !== 'true') {
-      window.location.href = 'login.html';
+    const loggedIn = localStorage.getItem('isLoggedIn');
+
+    if (loggedIn !== 'true') {
+      this.router.navigate(['/login']);
+      return;
     }
+
     this.loadTodos();
   }
-// TrackBy function for ngFor
-trackById(index: number, item: Todo) {
-  return item.id;
-}
-  // ---------------- LOAD TODOS ----------------
-loadTodos() {
-  this.http.get<any[]>(`${this.API_URL}/tasks/`)
-    .subscribe({
-      next: (data) => {
-        this.todos = (data || []).map(t => ({
-          id: t.id,
-          task: t.title,
-          completed: t.completed,
-          deleted: t.deleted,
-          date: t.date ? new Date(t.date).toISOString() : undefined  // ✅ convert to ISO string
-        }));
 
-        this.cdr.detectChanges();
-      },
-      error: (err) => console.error(err)
-    });
-}
-
-  // ---------------- COUNTS (reactive getters) ----------------
-  get totalTasks(): number {
-    return this.todos.filter(t => !t.deleted).length;
+  // ---------------- TRACK BY FIX ----------------
+  trackById(index: number, item: Todo): number {
+    return item.id;
   }
 
-  get completedTasks(): number {
-    return this.todos.filter(t => t.completed && !t.deleted).length;
-  }
+  // ---------------- LOAD ----------------
+  loadTodos() {
+    this.http.get<any>(`${this.API_URL}/tasks/`, { withCredentials: true })
+      .subscribe({
+        next: (data) => {
 
-  get pendingTasks(): number {
-    return this.todos.filter(t => !t.completed && !t.deleted).length;
+          const list = Array.isArray(data) ? data : [];
+
+          this.todos = list.map((t: any) => ({
+            id: t.id,
+            task: t.title || t.task,
+            completed: t.completed,
+            deleted: t.deleted,
+            date: t.date ? new Date(t.date).toISOString() : undefined
+          }));
+
+          this.cdr.detectChanges();
+        },
+        error: (err) => {
+          console.error("LOAD TASK ERROR:", err);
+          this.todos = [];
+        }
+      });
   }
 
   // ---------------- ADD TASK ----------------
-addTask() {
+  addTask() {
+  console.log("Add button clicked:", this.newTask);
+  if (!this.newTask.trim()) return;
   const taskText = this.newTask.trim();
   if (!taskText) return;
 
-  this.newTask = '';
+  const payload = {
+    title: taskText,
+    date: this.taskDate || null
+  };
 
-  this.http.post<any>(`${this.API_URL}/add-task/`, { title: taskText, date: this.taskDate || null })
-    .subscribe(res => {
-      this.todos.push({
-        id: res.id,
-        task: res.title,
-        completed: res.completed,
-        deleted: false,
-        date: res.date ? new Date(res.date).toISOString() : undefined  // ✅ convert here too
-      });
+  console.log("Adding task payload:", payload);
 
-      this.cdr.detectChanges();
+  this.http.post<any>(`${this.API_URL}/add-task/`, payload, { withCredentials: true })
+    .subscribe({
+      next: (res) => {
+        console.log("Add task response:", res);
+        const newTodo: Todo = {
+          id: res.id,
+          task: res.title,
+          completed: false,
+          deleted: false,
+          date: res.date ? new Date(res.date).toISOString() : undefined
+        };
+        this.todos = [newTodo, ...this.todos];
+        this.newTask = '';
+        this.taskDate = '';
+        this.cdr.detectChanges();
+      },
+      error: (err) => console.error("ADD TASK ERROR:", err)
     });
 }
 
-  // ---------------- COMPLETE TASK ----------------
+  // ---------------- COMPLETE ----------------
   completeTask(todo: Todo) {
-    if (!todo.completed) {
-      todo.completed = true;
+    todo.completed = true;
 
-      this.http.patch(`${this.API_URL}/tasks/${todo.id}/`, {
-        completed: true
-      }).subscribe();
-    }
+    this.http.patch(`${this.API_URL}/tasks/${todo.id}/`,
+      { completed: true },
+      { withCredentials: true }
+    ).subscribe();
   }
 
-  // ---------------- SOFT DELETE ----------------
+  // ---------------- DELETE (SOFT) ----------------
   deleteTask(todo: Todo) {
     todo.deleted = true;
 
-    this.http.delete(`${this.API_URL}/delete_task/${todo.id}/`).subscribe({
-      next: () => console.log('Moved to recycle bin (removed from backend)'),
-      error: err => console.error(err)
-    });
+    this.http.patch(`${this.API_URL}/tasks/${todo.id}/`,
+      { deleted: true },
+      { withCredentials: true }
+    ).subscribe();
   }
 
-  // ---------------- RESTORE TASK ----------------
- restoreTask(todo: Todo) {
-  todo.deleted = false;
+  // ---------------- RESTORE ----------------
+  restoreTask(todo: Todo) {
+    todo.deleted = false;
 
-  this.http.post(`${this.API_URL}/add-task/`, { title: todo.task, date: todo.date || null }).subscribe({
-    next: (res: any) => {
-      todo.id = res.id;
-      todo.completed = res.completed;
-      todo.date = res.date ? new Date(res.date).toISOString() : undefined; // ✅ normalize
-      console.log('Restored to backend');
-    },
-    error: err => console.error(err)
-  });
-}
+    this.http.patch(`${this.API_URL}/tasks/${todo.id}/`,
+      { deleted: false },
+      { withCredentials: true }
+    ).subscribe({
+      next: () => this.loadTodos()
+    });
+  }
 
   // ---------------- PERMANENT DELETE ----------------
   permanentDelete(todo: Todo) {
     if (!confirm('Are you sure?')) return;
 
-    this.todos = this.todos.filter(t => t.id !== todo.id);
-
-    this.http.delete(`${this.API_URL}/delete_task/${todo.id}/`).subscribe({
-      next: () => console.log('Permanently deleted'),
-      error: err => console.error(err)
+    this.http.delete(`${this.API_URL}/delete_task/${todo.id}/`,
+      { withCredentials: true }
+    ).subscribe({
+      next: () => this.loadTodos()
     });
   }
 
-  // ---------------- TOGGLE SELECT ----------------
+  // ---------------- SELECT ----------------
   toggleSelect(todo: Todo) {
+    todo.selected = !todo.selected;
+
     if (todo.selected) {
       this.selectedToDelete.push(todo.id);
     } else {
       this.selectedToDelete = this.selectedToDelete.filter(id => id !== todo.id);
-      this.allSelected = false;
     }
   }
 
@@ -168,72 +180,19 @@ addTask() {
   }
 
   deleteSelected() {
-    const selectedTasks = this.recycledTodos.filter(t => t.selected);
-    if (selectedTasks.length === 0) return;
+    const selected = this.recycledTodos.filter(t => t.selected);
 
-    if (!confirm(`Are you sure you want to permanently delete ${selectedTasks.length} task(s)?`)) return;
+    if (!selected.length) return;
+    if (!confirm(`Delete ${selected.length} tasks?`)) return;
 
-    selectedTasks.forEach(t => {
-      this.todos = this.todos.filter(td => td.id !== t.id);
-      this.http.delete(`${this.API_URL}/delete_task/${t.id}/`).subscribe();
+    selected.forEach(t => {
+      this.http.delete(`${this.API_URL}/delete_task/${t.id}/`,
+        { withCredentials: true }
+      ).subscribe();
     });
 
-    this.selectAll = false;
+    setTimeout(() => this.loadTodos(), 300);
   }
-
-  deleteSelectedPermanently() {
-    if (!confirm('Are you sure you want to permanently delete the selected tasks?')) return;
-
-    const tasksToDelete = [...this.selectedToDelete];
-    this.todos = this.todos.filter(t => !tasksToDelete.includes(t.id));
-    this.selectedToDelete = [];
-
-    tasksToDelete.forEach(id => {
-      this.http.delete(`${this.API_URL}/delete_task/${id}/`).subscribe({
-        next: () => console.log(`Task ${id} permanently deleted`),
-        error: err => console.error(err)
-      });
-    });
-  }
-
-  // ---------------- UI LOGIC ----------------
-  toggleMenu(event: Event) {
-    event.stopPropagation();
-    this.menuOpen = !this.menuOpen;
-  }
-
-  openBox(type: 'completed' | 'incompleted' | 'recycle') {
-    this.activeBox = type;
-  }
-
-  closeAll() {
-    this.menuOpen = false;
-    this.activeBox = null;
-  }
-
-  showRecycle(event: Event) {
-    event.stopPropagation();
-    this.recycleOpen = true;
-    this.menuOpen = false;
-  }
-
-  showCompleted(event: Event) {
-    event.stopPropagation();
-    this.recycleOpen = false;
-    this.menuOpen = false;
-  }
-
-  showIncomplete(event: Event) {
-    event.stopPropagation();
-    this.recycleOpen = false;
-    this.menuOpen = false;
-  }
-
-  logout() {
-    localStorage.removeItem('isLoggedIn');
-    window.location.href = '';
-  }
-
 
   // ---------------- FILTERS ----------------
   get activeTodos() {
@@ -252,10 +211,37 @@ addTask() {
     return this.todos.filter(t => t.deleted);
   }
 
-  goToDashboard() {
-    window.location.href = '/dashboard/';
+  // ---------------- UI ----------------
+  toggleMenu(event: Event) {
+    event.stopPropagation();
+    this.menuOpen = !this.menuOpen;
+    this.activeBox = null;
   }
-    goToExpenses() {
-  this.router.navigate(['/expenses']);
-}
+
+  openBox(type: 'completed' | 'incompleted' | 'recycle') {
+    this.activeBox = type;
+  }
+
+  closeAll() {
+    this.menuOpen = false;
+    this.activeBox = null;
+  }
+
+  // ---------------- NAV ----------------
+  goToDashboard() {
+    this.router.navigate(['/dashboard']);
+  }
+
+  goToExpenses() {
+    this.router.navigate(['/expenses']);
+  }
+
+  goToProfile() {
+    this.router.navigate(['/profile']);
+  }
+
+  logout() {
+    localStorage.removeItem('isLoggedIn');
+    this.router.navigate(['']);
+  }
 }

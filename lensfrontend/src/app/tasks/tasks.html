@@ -8,7 +8,7 @@
     <button (click)="goToExpenses()">Expenses</button>
       <button>Documents</button>
     <button>Insights</button>
-    <button>User Profile</button>
+    <button (click)="goToProfile()">User Profile</button>
     <button (click)="logout()">Logout</button>
   </div>
 </div>
@@ -56,7 +56,7 @@
   </div>
 
 <!-- Recycle -->
-<div class="task-popout" *ngIf="activeBox==='recycle'">
+<div class="task-popout recycle-box" *ngIf="activeBox==='recycle'">
   <h3>Recycle Bin</h3>
 
   <!-- Only show when there are deleted tasks -->
@@ -75,20 +75,27 @@
   
   </div>
   <ul>
-    <li *ngFor="let t of recycledTodos">
-      <input type="checkbox" [(ngModel)]="t.selected" (change)="toggleSelect(t)" />
-      <span>{{ t.task }}</span>
+   <li *ngFor="let t of recycledTodos">
 
-      <div class="icon-group">
-        <button class="icon-btn restore-btn" (click)="restoreTask(t)">
-          <i class="fas fa-undo"></i>
-        </button>
+  <div class="task-content">
+    <input type="checkbox"
+           [(ngModel)]="t.selected"
+           (change)="toggleSelect(t)" />
 
-        <button class="icon-btn delete-icon-btn" (click)="permanentDelete(t)">
-          <i class="fas fa-trash"></i>
-        </button>
-      </div>
-    </li>
+    <span>{{ t.task }}</span>
+  </div>
+
+  <div class="icon-group">
+    <button class="icon-btn restore-btn" (click)="restoreTask(t)">
+      <i class="fas fa-undo"></i>
+    </button>
+
+    <button class="icon-btn delete-icon-btn" (click)="permanentDelete(t)">
+      <i class="fas fa-trash"></i>
+    </button>
+  </div>
+
+</li>
   </ul>
 </div>
 
@@ -98,7 +105,7 @@
 
 <form (ngSubmit)="addTask()">
   <input [(ngModel)]="newTask" name="task" placeholder="Enter task" required>
-    <input type="date" [(ngModel)]="taskDate" name="date">
+    <input type="date" [(ngModel)]="taskDate" name="date" >
   <button type="submit">Add Task</button>
 </form>
 

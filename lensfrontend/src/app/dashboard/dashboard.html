@@ -5,7 +5,7 @@
     <h2>🔭 LifeLens</h2>
     <ul>
       <li class="active">Dashboard</li>
-      <li routerLink="/profile">Profile</li>
+      <li (click)="goToProfile()">Profile</li>
       <li routerLink="/tasks">Tasks</li>
       <li routerLink="/expenses">Expenses</li>
       <li routerLink="/documents">Documents</li>
@@ -45,17 +45,19 @@
       <!-- ROW 1: Task Chart + Expense Chart -->
       <div class="card">
         <h3>Task Overview</h3>
-        <canvas id="taskChart"></canvas>
+        <canvas #taskChart></canvas>
+
       </div>
       <div class="card">
         <h3>Expense Categories</h3>
-        <canvas id="expenseChart"></canvas>
+        <canvas #expenseChart></canvas>
+
       </div>
 
       <!-- ROW 2: Monthly Expenses + Calendar -->
       <div class="card">
         <h3>Monthly Expenses</h3>
-        <canvas id="barChart"></canvas>
+        <canvas #barChart></canvas>
       </div>
 <div class="card calendar">
   <div class="calendar-header">

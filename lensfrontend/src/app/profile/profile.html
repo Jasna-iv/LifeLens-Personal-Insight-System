@@ -1,0 +1,249 @@
+<div class="profile-container">
+
+  <!-- ================= NAVBAR ================= -->
+  <div class="navbar">
+    <div class="logo">🔭 LifeLens</div>
+
+    <div class="nav-links">
+      <button (click)="goToDashboard()">Dashboard</button>
+      <button (click)="goToTasks()">Tasks</button>
+      <button (click)="goToExpenses()">Expenses</button>
+      <button>Documents</button>
+      <button>Insights</button>
+      <button (click)="logout()">Logout</button>
+    </div>
+  </div>
+
+  <!-- ================= CENTER ================= -->
+  <div class="main-center">
+
+    <div class="profile-wrapper">
+
+      <!-- ================= SIDEBAR ================= -->
+      <div class="sidebar">
+
+        <div class="icon"
+             [class.active]="selectedTab === 'profile'"
+             (click)="setTab('profile')">👤</div>
+
+        <div class="icon"
+             [class.active]="selectedTab === 'edit'"
+             (click)="enableEdit()">✏️</div>
+
+        <div class="icon"
+             [class.active]="selectedTab === 'security'"
+             (click)="setTab('security')">🔒</div>
+
+        <div class="icon"
+             [class.active]="selectedTab === 'notifications'"
+             (click)="setTab('notifications')">🔔</div>
+
+      </div>
+
+      <!-- ================= CONTENT ================= -->
+      <div class="profile-content">
+
+        <!-- ================= PROFILE ================= -->
+        <div *ngIf="selectedTab === 'profile' && profile">
+
+          <h2 class="profile-name">{{ profile?.username }}</h2>
+          <p class="profile-sub">Welcome back 👋</p>
+
+          <ng-container *ngIf="profile; else loading">
+
+            <div class="profile-body">
+
+              <!-- LEFT -->
+              <div class="form-section">
+
+                <div class="info-card">
+                  <div class="info-label">Username</div>
+                  <div class="info-value">{{ profile.username }}</div>
+                </div>
+
+                <div class="info-card">
+                  <div class="info-label">Email</div>
+                  <div class="info-value">{{ profile.email || 'No email set' }}</div>
+                </div>
+
+                <div class="info-card">
+                  <div class="info-label">Bio</div>
+                  <div class="info-value">{{ profile.bio || 'No bio added' }}</div>
+                </div>
+
+              </div>
+
+              <!-- RIGHT IMAGE -->
+              <div class="image-section">
+                <div class="image-box">
+
+                  <img
+                    *ngIf="previewUrl || profile?.profile_pic; else emptyImg"
+                    [src]="previewUrl || (profile.profile_pic + '?t=' + refreshKey)"
+                    class="profile-img"
+                  />
+
+                  <ng-template #emptyImg>
+                    <div class="empty-circle"></div>
+                  </ng-template>
+
+                  <label class="camera-icon" *ngIf="editMode">
+                    📷
+                    <input type="file" (change)="onFileChange($event)" hidden />
+                  </label>
+
+                </div>
+              </div>
+
+            </div>
+
+          </ng-container>
+
+          <ng-template #loading>
+            <p>Loading profile...</p>
+          </ng-template>
+
+        </div>
+
+        <!-- ================= EDIT ================= -->
+        <div *ngIf="selectedTab === 'edit'" class="edit-mode">
+
+          <h1 class="edit-title">Edit Profile</h1>
+          <p class="edit-sub">Update your personal information</p>
+
+          <div class="profile-body">
+
+            <!-- LEFT -->
+            <div class="form-section edit-mode">
+
+              <div class="info-card">
+                <div class="info-label">Username</div>
+                <input type="text" [(ngModel)]="profile.username" />
+              </div>
+
+              <div class="info-card email-box">
+                <div class="info-label">Email</div>
+
+                <div class="input-wrapper">
+                  <input type="text" [(ngModel)]="profile.email" readonly />
+
+                  <span class="null-icon">🚫</span>
+                </div>
+              </div>
+
+              <div class="info-card">
+                <div class="info-label">Bio</div>
+                <textarea [(ngModel)]="profile.bio"></textarea>
+              </div>
+
+              <div class="btns">
+                <button (click)="saveProfile()">SAVE</button>
+                <button (click)="cancelEdit()">CANCEL</button>
+              </div>
+
+            </div>
+
+            <!-- RIGHT IMAGE -->
+            <div class="image-section-edit">
+              <div class="image-box-edit">
+
+                <img *ngIf="previewUrl; else oldImg" [src]="previewUrl" />
+
+                <ng-template #oldImg>
+                  <img *ngIf="profile.profile_pic; else emptyImg"
+                       [src]="profile.profile_pic" />
+                </ng-template>
+
+                <ng-template #emptyImg>
+                  <div class="empty-circle"></div>
+                </ng-template>
+
+                <label class="camera-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h4l2-2h6l2 2h4a2 2 0 0 1 2 2z"/>
+                    <circle cx="12" cy="13" r="4"/>
+                  </svg>
+                  <input type="file" (change)="onFileChange($event)" hidden />
+                </label>
+
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+
+        <!-- ================= SECURITY ================= -->
+      <div *ngIf="selectedTab === 'security'" class="security-box">
+
+        <h1>Security 🔒</h1>
+
+                <div class="security-input">
+          <input
+            [type]="showOld ? 'text' : 'password'"
+            placeholder="Current Password"
+            [(ngModel)]="passwordData.old_password"
+          />
+
+          <span class="toggle-icon" (click)="showOld = !showOld">
+            <i [class]="showOld ? 'fa-solid fa-eye-slash' : 'fa-solid fa-eye'"></i>
+          </span>
+        </div>
+
+        <div class="security-input">
+          <input
+            [type]="showNew ? 'text' : 'password'"
+            placeholder="New Password"
+            [(ngModel)]="passwordData.new_password"
+          />
+
+          <span class="toggle-icon" (click)="showNew = !showNew">
+            <i [class]="showNew ? 'fa-solid fa-eye-slash' : 'fa-solid fa-eye'"></i>
+          </span>
+        </div>
+
+        <div class="security-input">
+          <input
+            [type]="showConfirm ? 'text' : 'password'"
+            placeholder="Confirm Password"
+            [(ngModel)]="passwordData.confirm_password"
+          />
+
+          <span class="toggle-icon" (click)="showConfirm = !showConfirm">
+            <i [class]="showConfirm ? 'fa-solid fa-eye-slash' : 'fa-solid fa-eye'"></i>
+          </span>
+        </div>
+
+        <button (click)="changePassword()">Update Password</button>
+
+      </div>
+
+        <!-- ================= NOTIFICATIONS ================= -->
+        <div *ngIf="selectedTab === 'notifications'">
+
+          <h1>Notifications 🔔</h1>
+
+          <label>
+            <input type="checkbox" [(ngModel)]="notifications.email" />
+            Email
+          </label>
+
+          <label>
+            <input type="checkbox" [(ngModel)]="notifications.sms" />
+            SMS
+          </label>
+
+          <label>
+            <input type="checkbox" [(ngModel)]="notifications.app" />
+            App
+          </label>
+
+          <button (click)="saveNotifications()">Save Settings</button>
+
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+</div>
