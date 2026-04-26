@@ -5,9 +5,10 @@
   <div class="logo">🔭 LifeLens</div>
   <div class="nav-links">
     <button (click)="goToDashboard()">Dashboard</button>
+     <button class="active">Tasks</button>
     <button (click)="goToExpenses()">Expenses</button>
-      <button>Documents</button>
-    <button>Insights</button>
+      <button (click)="goToDocuments()">Documents</button>
+    <button (click)="goToInsights()">Insights</button>
     <button (click)="goToProfile()">User Profile</button>
     <button (click)="logout()">Logout</button>
   </div>

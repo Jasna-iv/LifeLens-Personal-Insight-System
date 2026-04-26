@@ -41,19 +41,20 @@ def create_profile(sender, instance, created, **kwargs):
         Profile.objects.create(user=instance)
 
 class Document(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
 
-    DOC_TYPES = [
-        ('pdf', 'PDF'),
-        ('image', 'Image'),
-        ('doc', 'Document'),
-        ('other', 'Other'),
-    ]
+    title = models.CharField(max_length=255)
+    file = models.FileField(upload_to='documents/')
+    doc_type = models.CharField(max_length=50, blank=True)
 
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    title = models.CharField(max_length=100)
-    doc_type = models.CharField(max_length=10, choices=DOC_TYPES)
+    # ✅ NEW FEATURES
+    folder = models.CharField(max_length=255, blank=True, null=True)
+    deleted = models.BooleanField(default=False)
+    shared = models.BooleanField(default=False)
+    starred = models.BooleanField(default=False)
     uploaded_at = models.DateTimeField(auto_now_add=True)
-    def document_upload_path(instance, filename):
-      return f"documents/{instance.doc_type}/{filename}"
+    updated_at = models.DateTimeField(auto_now=True)
+
     def __str__(self):
         return self.title
+    

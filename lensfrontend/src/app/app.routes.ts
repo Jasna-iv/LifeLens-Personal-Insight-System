@@ -7,6 +7,8 @@ import { ProfileComponent } from './profile/profile';
 import { SignupComponent } from './signup/signup';
 import { ForgotPasswordComponent } from './forgot-password/forgot-password';
 import { DocumentsComponent } from './documents/documents';
+import { InsightsComponent } from './insights/insights';
+
 
 
 
@@ -19,4 +21,5 @@ export const routes = [
   { path: 'expenses', component: ExpenseComponent, canActivate: [authGuard] }, 
   { path: 'profile', component: ProfileComponent, canActivate: [authGuard] },
    { path: 'documents', component: DocumentsComponent,canActivate: [authGuard]  },
+  { path: 'insights', component: InsightsComponent,canActivate: [authGuard]  }
 ];

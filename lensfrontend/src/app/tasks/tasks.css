@@ -8,25 +8,39 @@
   background-position: center;
 }
 
-/* ================= NAVBAR ================= */
 .navbar {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: #306317;
+
+  background: #306317; /* KEEP YOUR GREEN THEME */
   padding: 1rem 2rem;
+
   color: #ecf0f1;
   box-shadow: 0 2px 6px rgba(0,0,0,0.2);
-  flex-shrink: 0;
+
+  position: fixed;   /* IMPORTANT FIX */
+  top: 0;
+  left: 0;
+  right: 0;
+
+  height: 38px;      /* MATCH EXPENSE PAGE */
+  z-index: 100;
 }
 
 .navbar .logo {
-  font-size: 1.7rem;
-  font-weight: 700;
+  font-size: 1.4rem; /* MATCH EXPENSE PAGE */
+  font-weight: 600;
+  margin: 0;
+}
+
+.nav-links {
+  display: flex;
+  gap: 1rem;
 }
 
 .nav-links button {
-  margin-left: 1rem;
+  margin-left: 0.17rem;
   background: transparent;
   border: none;
   color: #ecf0f1;
@@ -34,10 +48,11 @@
   font-weight: 500;
 }
 
-.nav-links button:hover {
-  color: #6bb26c;
+/* SAME BEHAVIOR STYLE AS OTHER PAGES */
+.nav-links button:hover,
+.nav-links button.active {
+  color: #6bb26c; /* KEEP YOUR THEME GREEN */
 }
-
 /* ================= HEADING ================= */
 h1 {
   font-family: 'Press Start 2P', cursive;

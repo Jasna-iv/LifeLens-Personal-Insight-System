@@ -9,22 +9,36 @@ body, html {
   overflow: hidden; /* disable page scrolling */
 }
 
-/* ------------------ NAVBAR ------------------ */
+
+
+/* ===== NAVBAR (UNIFIED WITH PAGE 1) ===== */
 .navbar {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: #1f2a38;
+  background: #0f172a;   /* same as page 1 */
   padding: 1rem 2rem;
   color: #ecf0f1;
   box-shadow: 0 2px 6px rgba(0,0,0,0.2);
-  flex-shrink: 0;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  height: 38px; /* match page 1 */
 }
 
 .navbar .logo {
-  font-size: 1.7rem;
-  font-weight: 700;
+  font-size: 1.4rem;   /* match page 1 */
+  font-weight: 600;
+  margin: 0;           /* remove mismatch spacing */
 }
+
+.nav-links {
+  display: flex;
+  gap: 1rem;
+}
+
 
 .nav-links button {
   margin-left: 1rem;
@@ -35,8 +49,9 @@ body, html {
   font-weight: 500;
 }
 
-.nav-links button:hover {
-  color: #427292;
+.nav-links button:hover,
+.nav-links button.active {
+  color: #427292; /* same hover color */
 }
 
 /* ------------------ PAGE CONTAINER ------------------ */
@@ -67,7 +82,7 @@ body, html {
   border-radius: 10px;
   box-shadow: 0 3px 10px rgba(0,0,0,0.08);
   flex-shrink: 0;
-  margin-top: -12px;
+  margin-top: 12px;
 }
 
 .add-expense-form input,

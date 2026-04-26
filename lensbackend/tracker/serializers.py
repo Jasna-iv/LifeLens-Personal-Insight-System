@@ -45,10 +45,30 @@ class ProfileSerializer(serializers.ModelSerializer):
     
 
 
-class DocumentSerializer(serializers.ModelSerializer):
+from rest_framework import serializers
+from .models import Document
 
-    user_name = serializers.CharField(source='user.username', read_only=True)
+class DocumentSerializer(serializers.ModelSerializer):
+    file = serializers.SerializerMethodField()
+    size = serializers.SerializerMethodField()
 
     class Meta:
         model = Document
-        fields = '__all__'
+        fields = [
+            'id',
+            'title',
+            'file',
+            'doc_type',
+            'folder',
+            'deleted',
+            'shared',
+            'size',
+            'uploaded_at'
+        ]
+
+    def get_file(self, obj):
+        request = self.context.get('request')
+        return request.build_absolute_uri(obj.file.url)
+
+    def get_size(self, obj):
+        return f"{round(obj.file.size / 1024, 1)} KB"

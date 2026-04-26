@@ -218,5 +218,7 @@ saveNotifications() {
   goToDashboard() { this.router.navigate(['/dashboard']); }
   goToTasks() { this.router.navigate(['/tasks']); }
   goToExpenses() {this.router.navigate(['/expenses']);}
+  goToDocuments() {this.router.navigate(['/documents']);}
+  goToInsights() {this.router.navigate(['/insights']);}
   logout() { this.router.navigate(['']); }
 }

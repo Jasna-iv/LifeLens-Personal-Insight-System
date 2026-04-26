@@ -1,74 +1,371 @@
-<div class="doc-container">
+<!-- NAVBAR -->
+<div class="navbar">
+  <div class="logo">🔭 LifeLens</div>
+  <div class="nav-links">
+    <button (click)="goToDashboard()">Dashboard</button>
+    <button (click)="goToTasks()">Tasks</button>
+    <button (click)="goToExpenses()">Expenses</button>
+      <button class="active">Documents</button>
+    <button (click)="goToInsights()">Insights</button>
+    <button (click)="goToProfile()">User Profile</button>
+    <button (click)="logout()">Logout</button>
+  </div>
+</div>
 
-  <!-- HEADER -->
-  <div class="doc-header">
-    <h2>📁 My Documents</h2>
+<!-- APP LAYOUT -->
+<div class="app">
 
-    <!-- FILTER -->
-    <select [(ngModel)]="filterType">
-      <option value="">All Files</option>
-      <option value="pdf">PDF</option>
-      <option value="image">Image</option>
-      <option value="doc">Doc</option>
-      <option value="other">Other</option>
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+
+    <button class="upload-btn" (click)="openUpload()">
+      <lucide-icon [img]="Upload"></lucide-icon>
+      <span>Upload</span>
+    </button>
+
+    <nav class="menu">
+
+      <div (click)="setFilter('all')" [class.active]="filter==='all'">
+        <lucide-icon [img]="File"></lucide-icon> My Drive
+      </div>
+
+      <div (click)="setFilter('starred')" [class.active]="filter==='starred'" class="starred">
+        <lucide-icon [img]="Star"></lucide-icon> Starred
+      </div>
+
+      <div (click)="setFilter('files')" [class.active]="filter==='files'">
+        <lucide-icon [img]="File"></lucide-icon> Files
+      </div>
+
+      <div (click)="setFilter('folders')" [class.active]="filter==='folders'">
+        <lucide-icon [img]="Folder"></lucide-icon> Folders
+      </div>
+
+      <div (click)="setFilter('recent')" [class.active]="filter==='recent'">
+        <lucide-icon [img]="RotateCcw"></lucide-icon> Recent
+      </div>
+
+      <div (click)="setFilter('shared')" [class.active]="filter==='shared'">
+        <lucide-icon [img]="Share2"></lucide-icon> Shared
+      </div>
+
+      <div (click)="setFilter('trash')" [class.active]="filter==='trash'">
+        <lucide-icon [img]="Trash2"></lucide-icon> Trash
+      </div>
+
+    </nav>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="content">
+
+    <div class="topbar">
+      <input
+        [(ngModel)]="searchText"
+        (ngModelChange)="onSearchChange()"
+        placeholder="Search files or folders..."
+      >
+    </div>
+
+    <h2 *ngIf="filter==='all'">My Drive</h2>
+    <h2 *ngIf="filter!=='all'">{{filter | titlecase}}</h2>
+    <!-- ✅ TRASH ACTION BAR -->
+<div *ngIf="filter === 'trash'" class="trash-bar">
+
+  <div class="left">
+    <button class="select-btn" (click)="selectAllTrash()">
+      {{ areAllTrashSelected() ? 'Unselect All' : 'Select All' }}
+    </button>
+
+    <span class="count" *ngIf="selectedDocs.length">
+      {{ selectedDocs.length }} selected
+    </span>
+  </div>
+
+  <button 
+    class="delete-btn"
+    [disabled]="!selectedDocs.length"
+    (click)="deleteSelectedPermanently()">
+
+    Delete permanently
+  </button>
+
+</div>
+
+    <button *ngIf="currentFolder" class="back-btn" (click)="setFilter('all')">
+      ← Back
+    </button>
+
+<!-- GRID WRAPPER -->
+<div class="list-container">
+
+  <div class="grid">
+
+    <div class="card"
+     *ngFor="let doc of viewDocs"
+     (click)="selectDoc(doc)">
+
+  <!-- ✅ CHECKBOX (ONLY TRASH) -->
+  <input
+    *ngIf="filter === 'trash'"
+    type="checkbox"
+    [checked]="selectedDocs.some(d => d.id === doc.id)"
+    (click)="$event.stopPropagation()"
+    (change)="toggleSelect(doc)">
+
+      <!-- FOLDER -->
+      <div *ngIf="doc.type==='folder'" class="folder-card">
+        <lucide-icon [img]="Folder"></lucide-icon>
+        <p>{{doc.name}}</p>
+      </div>
+
+      <!-- FILE -->
+      <div *ngIf="doc.type!=='folder'" class="file-card">
+
+        <div class="file-icon">
+          <lucide-icon [img]="getFileIcon(doc.file)"></lucide-icon>
+        </div>
+
+        <p class="title">
+          {{doc.title}}
+          <span *ngIf="doc.starred && !doc.deleted" class="star-label">★</span>
+        </p>
+
+        <small>{{doc.uploaded_at | date:'mediumDate'}}</small>
+
+          <div class="hover-actions">
+
+  <!-- 🟣 TRASH VIEW -->
+  <ng-container *ngIf="doc.deleted">
+
+    <button type="button" (click)="restoreDoc(doc); $event.stopPropagation()">
+      <lucide-icon [img]="RotateCcw" size="16"></lucide-icon>
+    </button>
+
+    <button (click)="confirmPermanentDelete(doc); $event.stopPropagation()">
+      <lucide-icon [img]="Trash2" size="16"></lucide-icon>
+    </button>
+
+  </ng-container>
+
+  <!-- 🔵 SHARED VIEW (ONLY CLEAR FROM SHARED) -->
+<ng-container *ngIf="!doc.deleted && filter === 'shared'">
+
+  <button (click)="removeFromShared(doc); $event.stopPropagation()">
+    ❌
+  </button>
+
+</ng-container>
+
+  <!-- 🟢 NORMAL VIEW -->
+  <ng-container *ngIf="!doc.deleted && filter !== 'shared'">
+
+    <button (click)="selectDoc(doc); $event.stopPropagation()">
+      <lucide-icon [img]="Eye" size="16"></lucide-icon>
+    </button>
+
+    <button (click)="download(doc); $event.stopPropagation()">
+      <lucide-icon [img]="Download" size="16"></lucide-icon>
+    </button>
+
+    <button (click)="toggleStar(doc); $event.stopPropagation()">
+      <lucide-icon
+        [img]="Star"
+        class="star"
+        [class.active]="doc.starred"
+        size="16">
+      </lucide-icon>
+    </button>
+
+    <button (click)="share(doc); $event.stopPropagation()">
+      <lucide-icon [img]="Share2" size="16"></lucide-icon>
+    </button>
+
+    <button (click)="deleteDoc(doc); $event.stopPropagation()">
+      <lucide-icon [img]="Trash2" size="16"></lucide-icon>
+    </button>
+
+  </ng-container>
+
+</div>
+      </div>
+        </div>
+
+      </div>
+
+    </div>
+  </main>
+
+  <!-- PREVIEW PANEL -->
+  <aside class="preview" *ngIf="selectedDoc && selectedDoc.type!=='folder'">
+
+    <div class="preview-header">
+      <div>
+        <h3>{{selectedDoc.title}}</h3>
+        <p>{{selectedDoc.uploaded_at | date:'medium'}}</p>
+      </div>
+
+      <button class="close-btn" (click)="closePreview()">
+        <lucide-icon [img]="X"></lucide-icon>
+      </button>
+    </div>
+
+    <div class="preview-body">
+
+      <img *ngIf="isImage(selectedDoc.file)"
+           [src]="selectedDoc.file"
+           class="preview-img">
+
+      <iframe *ngIf="isPDF(selectedDoc.file)"
+        [src]="getSafeUrl(selectedDoc.file)"
+        width="100%"
+        height="500px">
+</iframe>
+
+      <iframe *ngIf="!isImage(selectedDoc.file) && !isPDF(selectedDoc.file)"
+              [src]="'https://docs.google.com/gview?url=' + selectedDoc.file + '&embedded=true'">
+      </iframe>
+
+    </div>
+
+    <div class="preview-buttons">
+
+      <button class="btn primary" (click)="openFullscreen()">
+        <lucide-icon [img]="Maximize"></lucide-icon>
+        View Fullscreen
+      </button>
+
+      <!-- Edit & Download in same row -->
+      <div class="btn-row">
+        <button class="btn" (click)="startEdit(selectedDoc)">
+          <lucide-icon [img]="Edit"></lucide-icon>
+          Edit
+        </button>
+
+        <button class="btn" (click)="download(selectedDoc)">
+          <lucide-icon [img]="Download"></lucide-icon>
+          Download
+        </button>
+      </div>
+
+      <button class="btn" (click)="share(selectedDoc)">
+        <lucide-icon [img]="Share2"></lucide-icon>
+        Share
+      </button>
+
+      <button class="btn danger" (click)="deleteDoc(selectedDoc)">
+        <lucide-icon [img]="Trash2"></lucide-icon>
+        Delete
+      </button>
+
+    </div>
+
+  </aside>
+
+  <!-- FULLSCREEN -->
+<div class="fullscreen" *ngIf="fullscreenDoc">
+
+  <div class="fullscreen-header">
+    <h3>{{fullscreenDoc.title}}</h3>
+    <button (click)="closeFullscreen()">
+      <lucide-icon [img]="X"></lucide-icon>
+    </button>
+  </div>
+
+  <div class="fullscreen-body">
+
+    <img *ngIf="isImage(fullscreenDoc.file)"
+         [src]="fullscreenDoc.file">
+
+    <iframe *ngIf="!isImage(fullscreenDoc.file)"
+        [src]="getSafeUrl(fullscreenDoc.file)"
+        width="100%"
+        height="100%">
+</iframe>
+  </div>
+
+</div>
+
+<!-- UPLOAD + EDIT MODAL (SAME UI) -->
+<div class="modal" *ngIf="showUpload">
+
+  <div class="modal-box"
+       (dragover)="onDragOver($event)"
+       (dragleave)="onDragLeave($event)"
+       (drop)="onDrop($event)"
+       [class.drag-active]="isDragging">
+
+    <h3>
+      {{ isEditMode ? 'Edit File' : 'Upload File' }}
+    </h3>
+
+    <!-- DRAG & DROP AREA -->
+    <div class="drop-zone">
+      <p>Drag & Drop file here</p>
+      <p>or</p>
+      <input type="file" (change)="onFileSelected($event)">
+    </div>
+
+    <!-- ✅ FIXED PREVIEW (THIS IS THE MAIN FIX) -->
+<!-- IMAGE -->
+<img *ngIf="fileType === 'Image' && previewUrl"
+     [src]="previewUrl"
+     class="preview-img">
+
+<!-- PDF -->
+<iframe *ngIf="fileType === 'PDF'"
+        [src]="getSafeUrl(previewUrl!)"
+        width="100%" height="500px">
+</iframe>
+
+<!-- OTHER FILES -->
+<p *ngIf="fileType === 'File' && previewUrl">
+  Preview not available for this file type
+</p>
+
+    <!-- FILE DETAILS -->
+    <div *ngIf="selectedFile" class="file-info">
+
+      <p class="file-fullname">
+        📄 {{ customFileName }}.{{ fileExtension }}
+      </p>
+
+      <div class="file-meta">
+        <span class="badge">{{ fileType }}</span>
+        <span class="badge">{{ fileSize }}</span>
+      </div>
+
+    </div>
+
+    <!-- FILE NAME -->
+    <div class="file-name-edit">
+      📄
+      <input type="text"
+             [(ngModel)]="customFileName"
+             (ngModelChange)="onNameChange()"
+             class="filename-input">
+    </div>
+
+    <!-- FOLDER -->
+    <select [(ngModel)]="selectedFolder">
+      <option value="">No Folder</option>
+      <option *ngFor="let f of folders" [value]="f.name">
+        {{f.name}}
+      </option>
     </select>
-  </div>
 
-  <!-- UPLOAD BOX -->
-  <div class="upload-card">
+    <input type="text"
+           [(ngModel)]="newFolder"
+           placeholder="Create new folder">
 
-    <input type="text" [(ngModel)]="title" placeholder="Document Title">
-
-    <select [(ngModel)]="doc_type">
-      <option value="">Select Type</option>
-      <option value="pdf">PDF</option>
-      <option value="image">Image</option>
-      <option value="doc">Doc</option>
-      <option value="other">Other</option>
-    </select>
-
-    <input type="file" (change)="onFileChange($event)">
-
-    <button (click)="upload()">⬆ Upload Document</button>
+    <!-- ACTIONS -->
+    <div class="modal-actions">
+      <button class="btn primary" (click)="upload()">Save</button>
+      <button class="btn" (click)="closeUpload()">Cancel</button>
+    </div>
 
   </div>
 
-  <!-- TABLE -->
-  <div class="table-card">
-
-    <table>
-      <thead>
-        <tr>
-          <th>Title</th>
-          <th>Type</th>
-          <th>Date</th>
-          <th>Action</th>
-        </tr>
-      </thead>
-
-      <tbody>
-        <tr *ngFor="let d of filteredDocs()">
-
-          <td>{{ d.title }}</td>
-          <td>
-            <span class="badge" [ngClass]="d.type">
-              {{ d.type }}
-            </span>
-          </td>
-
-          <td>{{ d.uploaded_at | date:'mediumDate' }}</td>
-
-          <td>
-            <button class="download-btn" (click)="download(d.file_url)">
-              ⬇ Download
-            </button>
-          </td>
-
-        </tr>
-      </tbody>
-
-    </table>
-
-  </div>
+</div>
 
 </div>

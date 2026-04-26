@@ -15,9 +15,11 @@ import os
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = 'django-insecure-&vk-)%@re9h8q)uj$t^1i@87-=q1z23e9@(m_t&&-6v65kwl6r'
-DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    "127.0.0.1",
+    "localhost"
+]
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -33,11 +35,13 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
-    'corsheaders.middleware.CorsMiddleware',
-
     'django.middleware.security.SecurityMiddleware',
+
+    'corsheaders.middleware.CorsMiddleware',  # MUST be right after SecurityMiddleware
+
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
+
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
@@ -80,13 +84,18 @@ AUTH_PASSWORD_VALIDATORS = [
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.SessionAuthentication',
-    ]
+    ],
+    # 'DEFAULT_PERMISSION_CLASSES': [
+    #     'rest_framework.permissions.IsAuthenticated',
+    # ]
 }
 
-LANGUAGE_CODE = 'en-us'
-TIME_ZONE = 'UTC'
-USE_I18N = True
+TIME_ZONE = 'Asia/Kolkata'
 USE_TZ = True
+
+LANGUAGE_CODE = 'en-us'
+USE_I18N = True
+
 
 STATIC_URL = 'static/'
 
@@ -94,18 +103,34 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 DEBUG = True
 # ---------------- CORS FIX ----------------
-# settings.py
+
 SESSION_COOKIE_SAMESITE = None      # allow cross-origin
 CSRF_COOKIE_SAMESITE = None         # allow cross-origin
+
 SESSION_COOKIE_SECURE = False       # local dev, not HTTPS
 CSRF_COOKIE_SECURE = False          # local dev, not HTTPS
+
 CORS_ALLOW_CREDENTIALS = True
+
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:4200",
 ]
 CSRF_TRUSTED_ORIGINS = [
     "http://localhost:4200",
 ]
+SESSION_COOKIE_SAMESITE = "Lax"
+CSRF_COOKIE_SAMESITE = "Lax"
+
+X_FRAME_OPTIONS = 'ALLOWALL'
+
+
+SESSION_ENGINE = "django.contrib.sessions.backends.db"
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
+    }
+}
+
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
@@ -113,4 +138,4 @@ EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 
 EMAIL_HOST_USER = 'ikaavuiv@gmail.com'
-EMAIL_HOST_PASSWORD = 'lcgc fmtb eekb iwhw'
+EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD")

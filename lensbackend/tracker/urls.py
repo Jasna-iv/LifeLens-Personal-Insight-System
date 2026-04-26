@@ -4,9 +4,13 @@ from django.conf.urls.static import static
 from .views import (
     dashboard, get_tasks, add_task, update_task, login_view, delete_task,
     get_expenses, add_expense, update_expense, expense_delete,profile_view,change_password,verify_otp,send_otp,signup,
-    reset_password,upload_document,list_documents
+    reset_password,list_documents,upload_document,delete_document,download_document,rename_document,restore_document,permanent_delete,
+    share_document,edit_document,toggle_star,get_insights,chat_view,get_csrf
 )
+
+
 from django.http import HttpResponse
+
 
 urlpatterns = [
     path('', lambda request: HttpResponse("Backend running")),
@@ -32,8 +36,21 @@ urlpatterns = [
     path('verify-otp/', verify_otp),
     path('reset-password/', reset_password),
 
-     path('documents/upload/', upload_document),
-     path('documents/', list_documents),
+
+    path('documents/', list_documents),
+    path('upload/', upload_document),
+    path('documents/<int:id>/edit/', edit_document),
+    path('documents/<int:id>/delete/', delete_document),
+    path('documents/<int:id>/restore/', restore_document),
+    path('documents/<int:id>/permanent/', permanent_delete),
+    path('documents/<int:id>/download/', download_document),
+    path('documents/<int:id>/rename/', rename_document),
+    path('documents/<int:id>/share/', share_document),
+    path('documents/<int:id>/star/', toggle_star),
+
+    path('insights/', get_insights),
+        path('chat/', chat_view),
+        path('csrf/', get_csrf),
 
 
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -251,11 +251,18 @@ export class ExpenseComponent implements OnInit {
   goToTasks() {
     this.router.navigate(['/tasks']);
   }
+  
+  goToDocuments() {
+    this.router.navigate(['/documents']);
+  }
+    goToInsights() {
+    this.router.navigate(['/insights']);
+  }
 
   goToProfile() {
     this.router.navigate(['/profile']);
   }
-
+  
   logout() {
     this.router.navigate(['']);
   }

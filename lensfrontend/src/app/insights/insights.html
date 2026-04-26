@@ -1,0 +1,201 @@
+<div class="layout">
+
+  <!-- NAVBAR -->
+  <div class="navbar">
+    <div class="logo">🔭 LifeLens</div>
+
+    <div class="nav-links">
+      <button (click)="goToDashboard()">Dashboard</button>
+      <button (click)="goToTasks()">Tasks</button>
+      <button (click)="goToExpenses()">Expenses</button>
+      <button (click)="goToDocuments()">Documents</button>
+      <button class="active">Insights</button>
+      <button (click)="goToProfile()">User Profile</button>
+      <button (click)="logout()">Logout</button>
+    </div>
+  </div>
+
+  <div class="body">
+
+    <!-- LEFT SIDEBAR -->
+    <aside class="sidebar">
+
+      <button class="new-chat" (click)="newChat()">+ New Chat</button>
+
+      <input [(ngModel)]="searchText" placeholder="Search chats..." />
+
+      <div class="history">
+        <div class="chat-item" *ngFor="let c of filteredChats(); let i=index">
+          <span (click)="loadChat(c)">{{c.title}}</span>
+          <button (click)="deleteChat(i)">🗑</button>
+        </div>
+      </div>
+
+    </aside>
+
+    <!-- CHAT AREA -->
+    <main class="chat-area">
+
+      <div class="chat-box" #chatBox>
+
+        <div *ngFor="let msg of messages"
+             class="chat-row"
+             [ngClass]="msg.type">
+
+          <div class="bubble">
+
+            <span *ngIf="msg.text !== 'Typing...'">
+              {{msg.text}}
+            </span>
+
+            <span *ngIf="msg.text === 'Typing...'" class="typing">
+              <span></span><span></span><span></span>
+            </span>
+
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- INPUT -->
+      <div class="input-bar">
+        <input [(ngModel)]="userInput"
+               (keydown.enter)="sendMessage(); $event.preventDefault()"
+               placeholder="Ask your AI Assistant..." />
+        <button (click)="sendMessage()">➤</button>
+      </div>
+
+    </main>
+<!-- RIGHT PANEL -->
+<aside class="right-panel">
+  <div class="right-scroll">
+  <div class="panel-title">
+    <h3>Your Dashboard</h3>
+  </div>
+
+  <!-- ================= KPI ROW 1 ================= -->
+  <div class="kpi-grid two-col">
+
+    <div class="kpi income">
+      <p>Income</p>
+      <h2>₹{{insights?.total_income || 0}}</h2>
+    </div>
+
+    <div class="kpi expense">
+      <p>Expense</p>
+      <h2>₹{{insights?.total_expense || 0}}</h2>
+    </div>
+
+  </div>
+
+  <!-- ================= KPI ROW 2 ================= -->
+  <div class="kpi-grid two-col">
+
+    <div class="kpi task-done">
+      <p>Completed Tasks</p>
+      <h2>{{completedTasks}}</h2>
+    </div>
+
+    <div class="kpi task-pending">
+      <p>Pending Tasks</p>
+      <h2>{{pendingTasks}}</h2>
+    </div>
+
+  </div>
+
+ 
+<!-- ================= CHARTS SECTION ================= -->
+<div class="quick-stats">
+
+  <!-- 🔹 TASK CARD -->
+  <div class="stat-card">
+
+    <div class="task-flex">
+
+      <div class="chart-box small">
+        <canvas #taskChart></canvas>
+      </div>
+
+      <div class="task-text">
+        <h4>Tasks</h4>
+        <p>{{completedTasks}} Active</p>
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- 🔹 EXPENSE / INCOME CARD -->
+
+<div class="stat-card">
+
+  <div class="expense-flex">
+
+    <div class="chart-box small expense-chart">
+      <canvas #expenseChart></canvas>
+    </div>
+
+    <div class="expense-text">
+      <h4>Expense</h4>
+            <p>₹{{insights?.total_income || 0}}</p>
+    </div>
+
+  </div>
+
+
+</div>
+
+
+  <!-- 🔹 BAR CHART (FULL WIDTH ROW) -->
+<div class="stat-card bar-full">
+
+  <div class="bar-header">
+    <h5>Monthly Overview</h5>
+    <div class="stat-value">{{expensePercent}}%</div>
+  </div>
+
+  <div class="bar-wrapper">
+    <canvas #barChart></canvas>
+  </div>
+
+</div>
+</div>
+
+  <!-- ================= PROGRESS CARDS ================= -->
+
+  <!-- EXPENSE PROGRESS -->
+  <div class="progress-card">
+
+    <div class="circle">
+      <span>{{expensePercent || 0}}%</span>
+    </div>
+
+    <div>
+      <h4>Expense Progress</h4>
+      <p>Based on your spending</p>
+    </div>
+
+  </div>
+
+  <!-- TASK PROGRESS -->
+  <div class="progress-card">
+
+    <div class="circle">
+      <span>{{insights?.productivity_rate || 50}}%</span>
+    </div>
+
+    <div>
+      <h4>Task Progress</h4>
+      <p>Based on your activity</p>
+    </div>
+
+  </div>
+
+  <!-- ================= AI INSIGHT ================= -->
+  <div class="glass-card ai">
+    <h4>🧠 AI Insight</h4>
+    <p>{{aiText}}</p>
+  </div>
+</div>
+</aside>

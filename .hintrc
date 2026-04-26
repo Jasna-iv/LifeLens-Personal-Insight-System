@@ -15,7 +15,8 @@
       {
         "ignore": [
           "backdrop-filter",
-          "user-select"
+          "user-select",
+          "image-rendering: crisp-edges"
         ]
       }
     ],
@@ -35,7 +36,8 @@
     "axe/text-alternatives": [
       "default",
       {
-        "image-alt": "off"
+        "image-alt": "off",
+        "frame-title": "off"
       }
     ],
     "no-inline-styles": "off"

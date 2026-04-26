@@ -1,0 +1,633 @@
+/* =========================
+   GLOBAL
+========================= */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Inter', sans-serif;
+}
+
+.layout {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: #0b1220;
+  color: #e5e7eb;
+}
+
+/* =========================
+   NAVBAR
+========================= */
+.navbar {
+  height: 70px;
+  background: rgba(15, 23, 42, 0.95);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+    padding: 1rem 2rem;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+
+.logo {
+  font-weight: bold;
+  color: #3b82f6;
+}
+
+.nav-links {
+  display: flex;
+  gap: 1.7rem;
+}
+
+.nav-links button {
+  margin-left: 1rem;
+  background: transparent;
+  border: none;
+  color: #cbd5e1;
+  margin: 0 8px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.nav-links button:hover {
+  color: #3b82f6;
+}
+
+.nav-links button.active {
+  color: #3b82f6;
+}
+.logo{
+  font-size: 1.4rem;
+  font-weight: 700;
+  margin: 0;
+}
+/* =========================
+   BODY LAYOUT
+========================= */
+.body {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+
+/* =========================
+   SIDEBAR
+========================= */
+.sidebar {
+  width: 260px;
+  background: #0f172a;
+  padding: 15px;
+  border-right: 1px solid rgba(255,255,255,0.05);
+}
+
+.new-chat {
+  width: 100%;
+  padding: 10px;
+  background: #3b82f6;
+  border: none;
+  color: white;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-bottom: 10px;
+}
+
+.sidebar input {
+  width: 100%;
+  padding: 8px;
+  border-radius: 6px;
+  border: none;
+  margin-bottom: 10px;
+  background: #1e293b;
+  color: white;
+}
+
+/* =========================
+   CHAT AREA
+========================= */
+.chat-area {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  overflow: hidden;
+}
+
+.chat-box {
+  flex: 1;
+  overflow-y: auto;
+  padding-right: 10px;
+}
+
+/* chat bubbles */
+.chat-row {
+  display: flex;
+  margin: 10px 0;
+}
+
+.chat-row.user {
+  justify-content: flex-end;
+}
+
+.bubble {
+  max-width: 65%;
+  padding: 10px 14px;
+  border-radius: 14px;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.user .bubble {
+  background: linear-gradient(135deg, #3b82f6, #2563eb);
+  color: white;
+}
+
+.bot .bubble {
+  background: rgba(255,255,255,0.06);
+  color: #e2e8f0;
+}
+
+/* input */
+.input-bar {
+  display: flex;
+  margin-top: 10px;
+  background: #1e293b;
+  border-radius: 10px;
+  padding: 5px;
+}
+
+.input-bar input {
+  flex: 1;
+  padding: 10px;
+  border: none;
+  background: transparent;
+  color: white;
+  outline: none;
+}
+
+.input-bar button {
+  background: #3b82f6;
+  border: none;
+  padding: 10px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  color: white;
+}
+
+/* =========================
+   RIGHT PANEL
+========================= */
+.right-panel {
+  width: 420px;   /* increased from 340px */
+  background: #0f172a;
+  padding: 16px;
+  border-left: 1px solid rgba(255,255,255,0.05);
+  overflow-y: auto;
+}
+
+.panel-title h3 {
+  margin-bottom: 12px;
+  color: #cbd5e1;
+}
+
+/* =========================
+   KPI CARDS
+========================= */
+.kpi-grid.two-col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.kpi {
+  padding: 12px;
+  border-radius: 12px;
+  background: rgba(255,255,255,0.04);
+}
+
+.kpi p {
+  font-size: 12px;
+  color: #94a3b8;
+}
+
+.kpi h2 {
+  margin-top: 5px;
+}
+
+.income h2 { color: #22c55e; }
+.expense h2 { color: #ef4444; }
+.task-done h2 { color: #22c55e; }
+.task-pending h2 { color: #f59e0b; }
+
+/* =========================
+   CHART CARDS (MAIN FIX)
+========================= */
+.quick-stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+/* base card */
+.stat-card {
+  background: #1e293b;
+  border-radius: 18px;
+  padding: 14px;
+  height: 170px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+}
+
+/* wide card (task chart) */
+.stat-card.wide {
+  grid-column: span 2;
+  height: 190px;
+}
+
+
+
+/* =========================
+   🔥 CHART FIX (IMPORTANT)
+========================= */
+
+/* THIS FIXES ALL ALIGNMENT ISSUES */
+.chart-box {
+  position: relative;
+  width: 100%;
+  height: 90px;
+}
+
+/* force chart fit */
+.chart-box canvas {
+  position: absolute !important;
+  top: 0;
+  left: 0;
+  width: 100% !important;
+  height: 100% !important;
+}
+
+/* small chart (doughnut) */
+.chart-box.small {
+  height: 120px;
+  width: 120px;
+}
+
+/* task layout */
+.task-flex {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* task chart size */
+.task-flex canvas {
+  width: 120px !important;
+  height: 120px !important;
+}
+
+/* =========================
+   PROGRESS CIRCLE
+========================= */
+.progress-card {
+  margin-top: 12px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  border-radius: 14px;
+  background: rgba(59,130,246,0.08);
+}
+
+.circle {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: conic-gradient(#3b82f6 75%, #364762 0);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+/* =========================
+   AI BOX
+========================= */
+.glass-card {
+  margin-top: 12px;
+  padding: 12px;
+  border-radius: 14px;
+  background: rgba(255,255,255,0.05);
+  backdrop-filter: blur(10px);
+}
+
+.ai p {
+  font-size: 13px;
+  color: #cbd5e1;
+}
+
+/* =========================
+   SCROLLBAR
+========================= */
+.chat-box::-webkit-scrollbar {
+  width: 6px;
+}
+
+.chat-box::-webkit-scrollbar-thumb {
+  background: #334155;
+  border-radius: 10px;
+}
+
+/* =========================
+   ANIMATION DOTS
+========================= */
+.typing span {
+  width: 6px;
+  height: 6px;
+  margin: 0 2px;
+  background: #94a3b8;
+  border-radius: 50%;
+  display: inline-block;
+  animation: blink 1.4s infinite;
+}
+
+@keyframes blink {
+  0%, 80%, 100% { opacity: 0; }
+  40% { opacity: 1; }
+}
+
+/* ================= GRID WRAPPER ================= */
+.quick-stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+/* ================= CARD ================= */
+.stat-card {
+  background: #1e293b;
+  border-radius: 18px;
+  padding: 14px;
+  height: 150px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+}
+
+/* wide task card */
+.stat-card.wide {
+  grid-column: span 2;
+  height: 100px;
+}
+
+/* ================= HEADER TEXT ================= */
+.stat-card h5 {
+  font-size: 12px;
+  color: #94a3b8;
+}
+
+.stat-value {
+  font-size: 18px;
+  font-weight: 600;
+  color: #e5e7eb;
+}
+
+/* ================= CHART BOX (GLOBAL) ================= */
+.chart-box {
+  position: relative;
+  width: 100%;
+  height: 60px;   /* 🔥 smaller */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* canvas must fully fit */
+.chart-box canvas {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+/* =========================================================
+   FIX: UNIFORM CHART SIZE (TASK + EXPENSE)
+========================================================= */
+ 
+
+/* force task + expense same alignment */
+.task-flex,
+.expense-flex {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+
+
+
+
+/* reduce spacing inside text */
+.task-text h4 {
+  margin: 0;
+  font-size: 16px;
+}
+
+.task-text p {
+  margin: 0;
+  font-size: 12px;
+  color: #94a3b8;
+}
+
+.bar-scroll {
+  overflow-x: auto;     /* enables horizontal scroll */
+  overflow-y: hidden;
+  width: 100%;
+  height: 100%;
+}
+
+/* make canvas wider than card so scroll appears */
+.bar-scroll canvas {
+  min-width: 900px;     /* forces overflow */
+  height: 100% !important;
+}
+.bar-scroll {
+  scroll-behavior: smooth;
+}
+
+.bar-scroll::-webkit-scrollbar {
+  height: 6px;
+}
+
+.bar-scroll::-webkit-scrollbar-thumb {
+  background: #3b82f6;
+  border-radius: 10px;
+}
+
+/* make card behave like natural stack */
+.stat-card {
+  background: #1e293b;
+  border-radius: 18px;
+  padding: 14px;
+  height: 150px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;  /* IMPORTANT FIX */
+  gap: 10px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+}
+
+.task-flex {
+  display: flex;
+  flex-direction: column;   /* IMPORTANT: stack vertically */
+  align-items: center;
+  justify-content: flex-start;
+  gap: 6px;
+  height: 100%;
+}
+.task-text {
+  order: 1; /* text first */
+  text-align: center;
+}
+
+.chart-box.small {
+  order: 2; /* chart below text */
+}
+
+/* /* keep chart visible */
+.chart-box.small {
+  width: 100px;
+  height: 70px;
+  flex-shrink: 0;
+} 
+/* TASK CHART SIZE CONTROL */
+.task-chart {
+  width: 100px;     /* change size here */
+  height: 70px;    /* change size here */
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* canvas must fill parent */
+.task-chart canvas {
+  width: 100% !important;
+  height: 100% !important;
+}
+/* ================= EXPENSE CHART SAME AS TASK ================= */
+.expense-chart {
+  width: 100px;     /* SAME as task */
+  height: 70px;     /* SAME as task */
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* force canvas to fit perfectly */
+.expense-chart canvas {
+  width: 100% !important;
+  height: 100% !important;
+}
+.expense-flex {
+  display: flex;
+  flex-direction: column;   /* SAME AS TASK */
+  align-items: center;
+  justify-content: flex-start;
+  gap: 6px;
+  height: 100%;
+  text-align: center;
+}
+
+/* same chart size system as task */
+.expense-chart {
+  width: 100px;
+  height: 70px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* text styling same as task */
+.expense-text h4 {
+
+  margin: 0;
+  font-size: 16px;
+  color: #e5e7eb;
+}
+
+.expense-text p {
+  margin: 0;
+  font-size: 12px;
+  color: #94a3b8;
+}
+.expense-text {
+  order: 1; /* text first */
+  text-align: center;
+}
+
+/* canvas must fit */
+.expense-chart canvas {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+.bar-full {
+  grid-column: 1 / -1;
+  width: 100%;
+  height: 260px;
+
+  background: linear-gradient(145deg, #1e293b, #0f172a);
+  border-radius: 20px;
+
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+
+  box-shadow: 0 12px 30px rgba(0,0,0,0.35);
+}
+.bar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.bar-header h5 {
+  font-size: 13px;
+  color: #94a3b8;
+  letter-spacing: 0.5px;
+}
+
+.bar-wrapper {
+  flex: 1;
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+/* =========================
+   RIGHT PANEL SCROLLBAR FIX
+========================= */
+
+/* width */
+.right-panel::-webkit-scrollbar {
+  width: 6px;
+}
+
+/* track (background) */
+.right-panel::-webkit-scrollbar-track {
+  background: #0f172a;   /* same as panel */
+}
+
+/* thumb */
+.right-panel::-webkit-scrollbar-thumb {
+  background: #334155;   /* dark slate */
+  border-radius: 10px;
+}
+
+/* hover */
+.right-panel::-webkit-scrollbar-thumb:hover {
+  background: #3b82f6;   /* blue accent on hover */
+}

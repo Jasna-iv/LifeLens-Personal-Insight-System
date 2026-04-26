@@ -235,6 +235,12 @@ export class TasksComponent implements OnInit {
   goToExpenses() {
     this.router.navigate(['/expenses']);
   }
+  goToDocuments() {
+    this.router.navigate(['/documents']);
+  }
+  goToInsights() {
+    this.router.navigate(['/insights']);
+  }
 
   goToProfile() {
     this.router.navigate(['/profile']);

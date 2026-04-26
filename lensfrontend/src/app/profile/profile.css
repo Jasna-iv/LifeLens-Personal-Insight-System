@@ -42,13 +42,25 @@ body {
 }
 
 /* ================= NAVBAR ================= */
+
 .navbar {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 10px 40px; /* reduced height */
+
   background: #ff5e61df;
-  color: white;
+  color: #ecf0f1;
+
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+
+  height: 70px;        /* 👈 increase height */
+  padding: 0 2rem;     /* only horizontal padding */
+
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+  z-index: 100;
 }
 
 .logo {
@@ -58,8 +70,8 @@ body {
 
 /* NAV BUTTONS */
 .nav-links button {
-  margin-left: 10px;
-  padding: 6px 14px;
+  padding: 6px 13px;
+  margin-top: -2px;
   border: none;
   background: transparent;
   color: #ffeaea;
@@ -68,11 +80,20 @@ body {
   font-size: 13px;
   transition: 0.2s;
 }
+.nav-links {
+  display: flex;
+  gap: 1rem;
+}
 
 .nav-links button:hover {
   background: rgba(255,255,255,0.2);
   color: #fff;
 }
+.nav-links button.active {
+  background: rgba(255,255,255,0.2);
+  color: #fff;
+}
+
 
 /* ================= CENTER ================= */
 .main-center {
